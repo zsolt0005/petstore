@@ -27,11 +27,11 @@ final class ResponseUtils
      * Creates a response data based on the initial requests accept header and the given data.
      *
      * @param IRequest $request
-     * @param object $data
+     * @param mixed $data
      *
      * @return Response
      */
-    public static function mapDataToResponse(IRequest $request, object $data): Response
+    public static function mapDataToResponse(IRequest $request, mixed $data): Response
     {
         return match ($request->getHeader('accept'))
         {

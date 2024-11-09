@@ -20,12 +20,12 @@ final readonly class JsonResponse implements Response
     /**
      * Constructor.
      *
-     * @param object|null $payload
+     * @param mixed $payload
      * @param int $responseCode
      * @param string $contentType
      */
     public function __construct(
-        private ?object $payload,
+        private mixed $payload,
         private int     $responseCode = IResponse::S200_OK,
         private string  $contentType  = 'application/json'
     )

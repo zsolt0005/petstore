@@ -8,6 +8,7 @@ use PetStore\Repositories\ICategoryRepository;
 use PetStore\Repositories\IPetRepository;
 use PetStore\Results\CreatePetErrorResult;
 use PetStore\Results\DeletePetByIdErrorResult;
+use PetStore\Results\FindPetByStatusErrorResult;
 use PetStore\Results\GetPetByIdErrorResult;
 use PetStore\Results\UpdatePetErrorResult;
 
@@ -135,6 +136,23 @@ final readonly class PetService
 
         $this->repository->deleteById($id);
         return true;
+    }
+
+    /**
+     * Finds all the pets with the given status.
+     *
+     * @param string $status
+     *
+     * @return Result<Pet[], FindPetByStatusErrorResult>
+     */
+    public function findByStatus(string $status): Result
+    {
+        if(empty($status))
+        {
+            Result::of(failure: FindPetByStatusErrorResult::INVALID_STATUS);
+        }
+
+        return Result::of(success: $this->repository->findByStatus($status));
     }
 
     private function validatePetData(Pet $data): bool

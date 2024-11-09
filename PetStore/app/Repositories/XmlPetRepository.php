@@ -87,4 +87,10 @@ final class XmlPetRepository extends AXmlRepository implements IPetRepository
 
         return true;
     }
+
+    /** @inheritDoc */
+    public function findByStatus(string $status): array
+    {
+        return Arrays::filter($this->data, static fn(Pet $d) => $d->status === $status);
+    }
 }

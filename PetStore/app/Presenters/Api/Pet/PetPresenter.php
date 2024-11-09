@@ -8,6 +8,7 @@ use Nette\Http\IResponse;
 use PetStore\Data\JsonResponse;
 use PetStore\Data\Pet;
 use PetStore\Results\CreatePetErrorResult;
+use PetStore\Results\FindPetByStatusErrorResult;
 use PetStore\Results\GetPetByIdErrorResult;
 use PetStore\Results\UpdatePetErrorResult;
 use PetStore\Services\PetService;
@@ -37,7 +38,6 @@ final class PetPresenter extends Presenter
      * Creates a new Pet.
      *
      * @return never
-     *
      * @throws Exception
      */
     public function actionCreate(): never
@@ -61,7 +61,6 @@ final class PetPresenter extends Presenter
      * Creates a new Pet.
      *
      * @return never
-     *
      * @throws Exception
      */
     public function actionUpdate(): never
@@ -92,7 +91,6 @@ final class PetPresenter extends Presenter
      * @param int $id
      *
      * @return never
-     *
      * @throws Exception
      */
     public function actionGetById(int $id): never
@@ -119,7 +117,6 @@ final class PetPresenter extends Presenter
      * @param int $id
      *
      * @return never
-     *
      * @throws Exception
      */
     public function actionDeleteById(int $id): never
@@ -131,5 +128,36 @@ final class PetPresenter extends Presenter
         }
 
         $this->sendResponse(new JsonResponse(null, IResponse::S200_OK));
+    }
+
+    /**
+     * Finds all the pets with the given status.
+     *
+     * @param string $status
+     *
+     * @return never
+     * @throws Exception
+     */
+    public function actionFindByStatus(string $status): never
+    {
+        $request = $this->getHttpRequest();
+
+        // This endpoint returns an array of object, which is not supported in XML format
+        if($request->getHeader('accept') === 'application/xml')
+        {
+            $this->sendResponse(new JsonResponse(null, IResponse::S415_UnsupportedMediaType));
+        }
+
+        $result = $this->service->findByStatus($status);
+
+        $this->sendResponse(
+            $result->match(
+                success: fn(array $pets) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pets)),
+                failure: fn(FindPetByStatusErrorResult $errorResult) => match ($errorResult)
+                {
+                    FindPetByStatusErrorResult::INVALID_STATUS => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest))
+                }
+            )
+        );
     }
 }

@@ -11,8 +11,8 @@ use InvalidArgumentException;
  * @author  Zsolt Döme
  * @since   2024
  *
- * @template T of object|null
  * @template R of object|null
+ * @template T of mixed
  */
 final class Result
 {
@@ -22,22 +22,22 @@ final class Result
      * @param R $failure
      * @param T $success
      */
-    public function __construct(private ?object $failure, private ?object $success)
+    public function __construct(private ?object $failure, private mixed $success)
     {
     }
 
     /**
      * Creates a new isntance of {@see self}.
      *
-     * @template T1 of object|null
      * @template R1 of object|null
+     * @template T1 of mixed
      *
      * @param R1 $failure
      * @param T1 $success
      *
      * @return Result<T1, R1>
      */
-    public static function of(?object $failure = null, ?object $success = null): Result
+    public static function of(?object $failure = null, mixed $success = null): Result
     {
         return new self($failure, $success);
     }

@@ -25,6 +25,13 @@ final class RouterFactory
                 'PUT' => 'update'
             ],
         ]));
+
+        $router->add(new ApiRoute('/api/v1/pet/findByStatus', 'Api:Pet', [
+            'methods' => [
+                'GET' => 'findByStatus'
+            ],
+        ]));
+
         $router->add(new ApiRoute('/api/v1/pet/<id>', 'Api:Pet', [
             'methods' => [
                 'GET' => 'getById',

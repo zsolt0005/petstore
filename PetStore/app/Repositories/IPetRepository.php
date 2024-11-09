@@ -48,4 +48,13 @@ interface IPetRepository
      * @return bool
      */
     public function deleteById(int $id): bool;
+
+    /**
+     * Finds all the pets with the given status.
+     *
+     * @param string $status
+     *
+     * @return Pet[]
+     */
+    public function findByStatus(string $status): array;
 }
