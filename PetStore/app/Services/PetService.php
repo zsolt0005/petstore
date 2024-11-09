@@ -47,7 +47,7 @@ final readonly class PetService
         $petCreated = $this->repository->create($data);
         if($petCreated)
         {
-            Result::of(success: $data);
+            return Result::of(success: $data);
         }
 
         return Result::of(failure: CreatePetErrorResult::FAILED);

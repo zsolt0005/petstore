@@ -5,6 +5,7 @@ namespace PetStore\Repositories;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use PetStore\Factories\SerializerFactory;
+use Throwable;
 use Tracy\Debugger;
 
 /**
@@ -104,7 +105,6 @@ abstract class AXmlRepository
      * Load the data from the xml file.
      *
      * @return T[]
-     * @throws IOException
      */
     private function load(): array
     {
@@ -113,12 +113,18 @@ abstract class AXmlRepository
             return [];
         }
 
-        $fileContents = FileSystem::read($this->filePath);
-        $serializer = SerializerFactory::buildSerializer();
+        try
+        {
+            $fileContents = FileSystem::read($this->filePath);
+            $serializer = SerializerFactory::buildSerializer();
 
-        /** @var T[] $mappedObject */
-        $mappedObject = $serializer->deserialize($fileContents, $this->getDataType() . '[]', 'xml');
-
-        return $mappedObject;
+            /** @var T[] $mappedObject */
+            $mappedObject = $serializer->deserialize($fileContents, $this->getDataType() . '[]', 'xml');
+            return $mappedObject;
+        }
+        catch(Throwable)
+        {
+            return [];
+        }
     }
 }
