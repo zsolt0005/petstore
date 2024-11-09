@@ -66,4 +66,10 @@ final class XmlPetRepository extends AXmlRepository implements IPetRepository
 
         return true;
     }
+
+    /** @inheritDoc */
+    public function getById(int $id): ?Pet
+    {
+        return Arrays::first($this->data, static fn(Pet $d) => $d->id === $id);
+    }
 }

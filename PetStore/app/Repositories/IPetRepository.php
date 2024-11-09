@@ -30,4 +30,13 @@ interface IPetRepository
      * @return bool
      */
     public function update(Pet $data): bool;
+
+    /**
+     * Gets the pet by its ID.
+     *
+     * @param int $id
+     *
+     * @return Pet|null
+     */
+    public function getById(int $id): ?Pet;
 }

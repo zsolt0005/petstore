@@ -7,6 +7,7 @@ use PetStore\Data\Result;
 use PetStore\Repositories\ICategoryRepository;
 use PetStore\Repositories\IPetRepository;
 use PetStore\Results\CreatePetErrorResult;
+use PetStore\Results\GetPetByIdErrorResult;
 use PetStore\Results\UpdatePetErrorResult;
 
 /**
@@ -77,6 +78,29 @@ final readonly class PetService
         if(!$petUpdated)
         {
             return Result::of(failure: UpdatePetErrorResult::PET_NOT_FOUND);
+        }
+
+        return Result::of(success: $data);
+    }
+
+    /**
+     * Get a pet by its ID.
+     *
+     * @param int $id
+     *
+     * @return Result<Pet, GetPetByIdErrorResult>
+     */
+    public function getById(int $id): Result
+    {
+        if($id <= 0)
+        {
+            return Result::of(failure: GetPetByIdErrorResult::INVALID_ID);
+        }
+
+        $data = $this->repository->getById($id);
+        if($data === null)
+        {
+            return Result::of(failure: GetPetByIdErrorResult::PET_NOT_FOUND);
         }
 
         return Result::of(success: $data);

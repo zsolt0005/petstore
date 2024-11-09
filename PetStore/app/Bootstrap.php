@@ -19,6 +19,15 @@ class Bootstrap
 		$this->rootDir = dirname(__DIR__);
 		$this->configurator = new Configurator;
 		$this->configurator->setTempDirectory($this->rootDir . '/temp');
+
+        if(getenv('NETTE_DEBUG_MODE'))
+        {
+            $this->configurator->setDebugMode(true);
+        }
+        else
+        {
+            $this->configurator->setDebugMode(false);
+        }
 	}
 
     /**
@@ -38,16 +47,7 @@ class Bootstrap
      */
 	public function initializeEnvironment(): void
 	{
-		$this->configurator->enableTracy($this->rootDir . '/log');
-
-        if(getenv('NETTE_DEBUG_MODE'))
-        {
-            $this->configurator->setDebugMode(true);
-        }
-        else
-        {
-            $this->configurator->setDebugMode(false);
-        }
+        $this->configurator->enableTracy($this->rootDir . '/log');
 
 		$this->configurator->createRobotLoader()
 			->addDirectory(__DIR__)

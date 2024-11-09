@@ -22,7 +22,13 @@ final class RouterFactory
         $router->add(new ApiRoute('/api/v1/pet', 'Api:Pet', [
             'methods' => [
                 'POST' => 'create',
-                'PUT' => 'update',
+                'PUT' => 'update'
+            ],
+        ]));
+
+        $router->add(new ApiRoute('/api/v1/pet/<id>', 'Api:Pet', [
+            'methods' => [
+                'GET' => 'getById'
             ],
         ]));
 
