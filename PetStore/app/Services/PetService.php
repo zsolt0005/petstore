@@ -98,6 +98,42 @@ final readonly class PetService
     }
 
     /**
+     * PARTIALLY Updates a Pet.
+     *
+     * @param int $id
+     * @param string $name
+     * @param string $status
+     *
+     * @return Result<UpdatePetErrorResult, Pet>
+     */
+    public function partialUpdate(int $id, string $name, string $status): Result
+    {
+        if($id <= 0)
+        {
+            return Result::of(failure: UpdatePetErrorResult::INVALID_ID);
+        }
+
+        $pet = $this->repository->getById($id);
+        if($pet === null)
+        {
+            return Result::of(failure: UpdatePetErrorResult::PET_NOT_FOUND);
+        }
+
+        if(!empty($name))
+        {
+            $pet->name = $name;
+        }
+
+        if(!empty($status))
+        {
+            $pet->status = $status;
+        }
+
+        $this->repository->update($pet);
+        return Result::of(success: $pet);
+    }
+
+    /**
      * Get a pet by its ID.
      *
      * @param int $id

@@ -59,7 +59,7 @@ final class PetPresenter extends Presenter
     }
 
     /**
-     * Creates a new Pet.
+     * FULL Updates a Pet.
      *
      * @return never
      * @throws Exception
@@ -76,6 +76,38 @@ final class PetPresenter extends Presenter
         $this->sendResponse(
             $result->match(
                 success: fn(Pet $pet) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pet)),
+                failure: fn(UpdatePetErrorResult $errorResult) => match ($errorResult)
+                {
+                    UpdatePetErrorResult::INVALID_ID => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest)),
+                    UpdatePetErrorResult::PET_NOT_FOUND => $this->sendResponse(new JsonResponse(null, IResponse::S404_NotFound)),
+                    default => $this->sendResponse(new JsonResponse(null, IResponse::S405_MethodNotAllowed))
+                }
+            )
+        );
+    }
+
+    /**
+     * Partially Updates a Pet.
+     *
+     * @param int $id
+     *
+     * @return never
+     * @throws Exception
+     */
+    public function actionPartialUpdate(int $id): never
+    {
+        $httpRequest = $this->getHttpRequest();
+        $request = $this->getRequest();
+
+        $result = $this->service->partialUpdate(
+            $id,
+            $request->getParameter('name') ?? '',
+            $request->getParameter('status') ?? '',
+        );
+
+        $this->sendResponse(
+            $result->match(
+                success: fn(Pet $pet) => $this->sendResponse(ResponseUtils::mapDataToResponse($httpRequest, $pet)),
                 failure: fn(UpdatePetErrorResult $errorResult) => match ($errorResult)
                 {
                     UpdatePetErrorResult::INVALID_ID => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest)),

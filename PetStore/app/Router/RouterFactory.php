@@ -41,7 +41,8 @@ final class RouterFactory
         $router->add(new ApiRoute('/api/v1/pet/<id>', 'Api:Pet', [
             'methods' => [
                 'GET' => 'getById',
-                'DELETE' => 'deleteById'
+                'DELETE' => 'deleteById',
+                'POST' => 'partialUpdate'
             ]
         ]));
 
