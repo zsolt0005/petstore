@@ -15,10 +15,10 @@ final class RouterFactory
 	{
 		$router = new RouteList;
 
-        // Web
+        // [Web]
         $router->addRoute('<presenter>/<action>', 'Home:default');
 
-        // API
+        # [API] Pets
         $router->add(new ApiRoute('/api/v1/pet', 'Api:Pet', [
             'methods' => [
                 'POST' => 'create',
@@ -31,8 +31,14 @@ final class RouterFactory
             ],
         ]));
 
+        # [API] Categories
         $router->add(new ApiRoute('/api/v1/category', 'Api:Category', ['methods' => ['POST' => 'create']]));
         $router->add(new ApiRoute('/api/v1/category/<id>', 'Api:Category', ['methods' => ['DELETE' => 'delete']]));
+
+        # [API] Tags
+        $router->add(new ApiRoute('/api/v1/tag', 'Api:Tag', ['methods' => ['POST' => 'create']]));
+        $router->add(new ApiRoute('/api/v1/tag/<id>', 'Api:Tag', ['methods' => ['DELETE' => 'delete']]));
+
 
         return $router;
 	}

@@ -56,7 +56,7 @@ final readonly class PetService
     }
 
     /**
-     * Creates a new Pet.
+     * Updates a Pet.
      *
      * @param Pet $data
      *

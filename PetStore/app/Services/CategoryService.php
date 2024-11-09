@@ -34,9 +34,9 @@ final readonly class CategoryService
      */
     public function create(Category $category): Result
     {
-        if($category->id <= 0)
+        if($category->id <= 0 || empty($category->name))
         {
-            return Result::of(failure: CreateCategoryErrorResult::INVALID_ID);
+            return Result::of(failure: CreateCategoryErrorResult::INVALID_DATA);
         }
 
         $createdCategory = $this->repository->create($category);

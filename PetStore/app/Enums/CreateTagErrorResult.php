@@ -2,7 +2,7 @@
 
 namespace PetStore\Results;
 
-enum CreateCategoryErrorResult
+enum CreateTagErrorResult
 {
     case INVALID_DATA;
     case FAILED;

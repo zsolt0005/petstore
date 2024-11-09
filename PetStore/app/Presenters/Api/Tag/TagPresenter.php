@@ -1,38 +1,38 @@
 <?php declare(strict_types=1);
 
-namespace PetStore\Presenters\Api\Category;
+namespace PetStore\Presenters\Api\Tag;
 
 use Exception;
 use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
-use PetStore\Data\Category;
 use PetStore\Data\JsonResponse;
-use PetStore\Results\CreateCategoryErrorResult;
-use PetStore\Services\CategoryService;
+use PetStore\Data\Tag;
+use PetStore\Results\CreateTagErrorResult;
+use PetStore\Services\TagService;
 use PetStore\Utils\RequestUtils;
 use PetStore\Utils\ResponseUtils;
 
 /**
- * Class CategoryPresenter
+ * Class TagPresenter
  *
  * @package PetStore\Presenters\Api\Pet
  * @author  Zsolt Döme
  * @since   2024
  */
-final class CategoryPresenter extends Presenter
+final class TagPresenter extends Presenter
 {
     /**
      * Constructor.
      *
-     * @param CategoryService $service
+     * @param TagService $service
      */
-    public function __construct(private readonly CategoryService $service)
+    public function __construct(private readonly TagService $service)
     {
         parent::__construct();
     }
 
     /**
-     * Creates a new Category.
+     * Creates a new Tag.
      *
      * @return never
      * @throws Exception
@@ -41,21 +41,21 @@ final class CategoryPresenter extends Presenter
     {
         $request = $this->getHttpRequest();
 
-        $categoryData = RequestUtils::mapRequestToData($request, Category::class)
+        $categoryData = RequestUtils::mapRequestToData($request, Tag::class)
             ?? $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest));
 
         $result = $this->service->create($categoryData);
 
         $this->sendResponse(
             $result->match(
-                success: fn(Category $pet) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pet)),
-                failure: fn(CreateCategoryErrorResult $errorResult) => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest))
+                success: fn(Tag $pet) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pet)),
+                failure: fn(CreateTagErrorResult $errorResult) => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest))
             )
         );
     }
 
     /**
-     * Deletes a Category.
+     * Deletes a Tag.
      *
      * @param int $id
      *
