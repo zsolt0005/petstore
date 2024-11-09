@@ -20,9 +20,7 @@
 		"phpdocumentor/reflection-docblock": "^5.5.1"
 	},
 	"require-dev": {
-		"phpstan/phpstan": "^1.12.8",
-		"phpunit/phpunit": "^11.4.3",
-		"dg/bypass-finals": "^1.8.0"
+		"phpstan/phpstan": "^1.12.8"
 	},
 	"autoload": {
 		"psr-4": {
@@ -37,8 +35,7 @@
 	"minimum-stability": "dev",
 	"scripts":
 	{
-		"phpstan": "vendor/bin/phpstan analyse -c phpstan.neon app/ tests/",
-		"phpunit": "vendor/bin/phpunit tests --bootstrap tests/bootstrap.php"
+		"phpstan": "vendor/bin/phpstan analyse -c phpstan.neon app/ tests/"
 	},
 	"config": {
 		"allow-plugins": {
