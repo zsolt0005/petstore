@@ -7,6 +7,7 @@ use PetStore\Data\Result;
 use PetStore\Repositories\ICategoryRepository;
 use PetStore\Repositories\IPetRepository;
 use PetStore\Results\CreatePetErrorResult;
+use PetStore\Results\DeletePetByIdErrorResult;
 use PetStore\Results\GetPetByIdErrorResult;
 use PetStore\Results\UpdatePetErrorResult;
 
@@ -116,6 +117,24 @@ final readonly class PetService
         }
 
         return Result::of(success: $data);
+    }
+
+    /**
+     * Deletes a pet by its ID.
+     *
+     * @param int $id
+     *
+     * @return bool
+     */
+    public function deleteById(int $id): bool
+    {
+        if($id <= 0)
+        {
+            return false;
+        }
+
+        $this->repository->deleteById($id);
+        return true;
     }
 
     private function validatePetData(Pet $data): bool

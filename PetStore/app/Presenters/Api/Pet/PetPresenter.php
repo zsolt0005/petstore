@@ -112,4 +112,24 @@ final class PetPresenter extends Presenter
             )
         );
     }
+
+    /**
+     * Delete the Pet by its ID.
+     *
+     * @param int $id
+     *
+     * @return never
+     *
+     * @throws Exception
+     */
+    public function actionDeleteById(int $id): never
+    {
+        $result = $this->service->deleteById($id);
+        if(!$result)
+        {
+            $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest));
+        }
+
+        $this->sendResponse(new JsonResponse(null, IResponse::S200_OK));
+    }
 }

@@ -39,4 +39,13 @@ interface IPetRepository
      * @return Pet|null
      */
     public function getById(int $id): ?Pet;
+
+    /**
+     * Deletes the pet by its ID.
+     *
+     * @param int $id
+     *
+     * @return bool
+     */
+    public function deleteById(int $id): bool;
 }
