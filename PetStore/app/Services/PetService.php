@@ -7,6 +7,7 @@ use PetStore\Data\Result;
 use PetStore\Repositories\ICategoryRepository;
 use PetStore\Repositories\IPetRepository;
 use PetStore\Results\CreatePetErrorResult;
+use PetStore\Results\UpdatePetErrorResult;
 
 /**
  * Class PetService
@@ -41,15 +42,43 @@ final readonly class PetService
     {
         if(!$this->categoryRepository->exists($data->category->id))
         {
-            return Result::of(failure: CreatePetErrorResult::CATEGORY_DOES_NOT_EXIST);
+            return Result::of(failure: CreatePetErrorResult::CATEGORY_NOT_FOUND);
         }
 
         $petCreated = $this->repository->create($data);
-        if($petCreated)
+        if(!$petCreated)
         {
-            return Result::of(success: $data);
+            return Result::of(failure: CreatePetErrorResult::FAILED);
         }
 
-        return Result::of(failure: CreatePetErrorResult::FAILED);
+        return Result::of(success: $data);
+    }
+
+    /**
+     * Creates a new Pet.
+     *
+     * @param Pet $data
+     *
+     * @return Result<Pet, UpdatePetErrorResult>
+     */
+    public function update(Pet $data): Result
+    {
+        if($data->id <= 0)
+        {
+            return Result::of(failure: UpdatePetErrorResult::INVALID_ID);
+        }
+
+        if(!$this->categoryRepository->exists($data->category->id))
+        {
+            return Result::of(failure: UpdatePetErrorResult::CATEGORY_NOT_FOUND);
+        }
+
+        $petUpdated = $this->repository->update($data);
+        if(!$petUpdated)
+        {
+            return Result::of(failure: UpdatePetErrorResult::PET_NOT_FOUND);
+        }
+
+        return Result::of(success: $data);
     }
 }

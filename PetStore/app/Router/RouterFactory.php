@@ -20,7 +20,10 @@ final class RouterFactory
 
         // API
         $router->add(new ApiRoute('/api/v1/pet', 'Api:Pet', [
-            'methods' => ['POST' => 'create'],
+            'methods' => [
+                'POST' => 'create',
+                'PUT' => 'update',
+            ],
         ]));
 
         return $router;

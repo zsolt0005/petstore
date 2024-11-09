@@ -51,4 +51,19 @@ final class XmlPetRepository extends AXmlRepository implements IPetRepository
 
         return true;
     }
+
+    /** @inheritDoc */
+    public function update(Pet $data): bool
+    {
+        $existingDataKey = Arrays::firstKey($this->data, static fn(Pet $d) => $d->id === $data->id);
+        if($existingDataKey === null)
+        {
+            return false;
+        }
+
+        $this->data[$existingDataKey] = $data;
+        $this->save();
+
+        return true;
+    }
 }

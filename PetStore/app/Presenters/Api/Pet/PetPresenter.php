@@ -8,6 +8,7 @@ use Nette\Http\IResponse;
 use PetStore\Data\JsonResponse;
 use PetStore\Data\Pet;
 use PetStore\Results\CreatePetErrorResult;
+use PetStore\Results\UpdatePetErrorResult;
 use PetStore\Services\PetService;
 use PetStore\Utils\RequestUtils;
 use PetStore\Utils\ResponseUtils;
@@ -51,6 +52,35 @@ final class PetPresenter extends Presenter
             $result->match(
                success: fn(Pet $pet) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pet)),
                failure: fn(CreatePetErrorResult $errorResult) => $this->sendResponse(new JsonResponse(null, IResponse::S405_MethodNotAllowed))
+            )
+        );
+    }
+
+    /**
+     * Creates a new Pet.
+     *
+     * @return never
+     *
+     * @throws Exception
+     */
+    public function actionUpdate(): never
+    {
+        $request = $this->getHttpRequest();
+
+        $petData = RequestUtils::mapRequestToData($request, Pet::class)
+            ?? $this->sendResponse(new JsonResponse(null, IResponse::S405_MethodNotAllowed));
+
+        $result = $this->service->update($petData);
+
+        $this->sendResponse(
+            $result->match(
+                success: fn(Pet $pet) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pet)),
+                failure: fn(UpdatePetErrorResult $errorResult) => match ($errorResult)
+                {
+                    UpdatePetErrorResult::INVALID_ID => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest)),
+                    UpdatePetErrorResult::PET_NOT_FOUND => $this->sendResponse(new JsonResponse(null, IResponse::S404_NotFound)),
+                    default => $this->sendResponse(new JsonResponse(null, IResponse::S405_MethodNotAllowed))
+                }
             )
         );
     }

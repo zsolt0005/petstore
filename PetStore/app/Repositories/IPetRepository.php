@@ -21,4 +21,13 @@ interface IPetRepository
      * @return bool
      */
     public function create(Pet $data): bool;
+
+    /**
+     * Updates an existing Pet.
+     *
+     * @param Pet $data
+     *
+     * @return bool
+     */
+    public function update(Pet $data): bool;
 }
