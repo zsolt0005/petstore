@@ -5,9 +5,11 @@ services:
 
     # Presenters
     - PetStore\Presenters\Api\Pet\PetPresenter
+    - PetStore\Presenters\Api\Category\CategoryPresenter
 
     # Services
     - PetStore\Services\PetService
+    - PetStore\Services\CategoryService
 
     # Repositories
     - PetStore\Repositories\XmlPetRepository('%appDir%/../db/pet-store.xml', 'Pets')

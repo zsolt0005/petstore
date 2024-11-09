@@ -25,12 +25,14 @@ final class RouterFactory
                 'PUT' => 'update'
             ],
         ]));
-
         $router->add(new ApiRoute('/api/v1/pet/<id>', 'Api:Pet', [
             'methods' => [
                 'GET' => 'getById'
             ],
         ]));
+
+        $router->add(new ApiRoute('/api/v1/category', 'Api:Category', ['methods' => ['POST' => 'create']]));
+        $router->add(new ApiRoute('/api/v1/category/<id>', 'Api:Category', ['methods' => ['DELETE' => 'delete']]));
 
         return $router;
 	}
