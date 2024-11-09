@@ -60,6 +60,6 @@ class Bootstrap
 	private function setupContainer(): void
 	{
 		$configDir = $this->rootDir . '/config';
-		$this->configurator->addConfig($configDir . '/common.neon');
+		$this->configurator->addConfig($configDir . '/config.neon');
 	}
 }

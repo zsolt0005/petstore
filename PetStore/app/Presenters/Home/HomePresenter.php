@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
-
-namespace PetStore\Home;
+namespace PetStore\Presenters\Home;
 
 use Nette\Application\UI\Presenter;
 

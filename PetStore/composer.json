@@ -14,7 +14,12 @@
 		"nette/security": "^3.2",
 		"nette/utils": "^4.0",
 		"latte/latte": "^3.0",
-		"tracy/tracy": "^2.10"
+		"tracy/tracy": "^2.10",
+		"contributte/api-router": "^6.0.0",
+		"netresearch/jsonmapper": "^5.0.0",
+		"symfony/serializer": "^7.1.6",
+		"symfony/property-access": "^7.1.6",
+		"phpdocumentor/reflection-docblock": "^5.5.1"
 	},
 	"require-dev": {
 		"phpstan/phpstan": "^1.12.8",

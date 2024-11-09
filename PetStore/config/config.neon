@@ -1,0 +1,38 @@
+parameters:
+
+services:
+    router: PetStore\Router\RouterFactory::createRouter
+
+    # Presenters
+    - PetStore\Presenters\Api\Pet\PetPresenter
+
+    # Services
+    - PetStore\Services\PetService
+
+    # Repositories
+    - PetStore\Repositories\XmlPetRepository
+
+extensions:
+	apiRouter: Contributte\ApiRouter\DI\ApiRouterExtension
+
+application:
+	errorPresenter:
+		4xx: Error:Error4xx
+		5xx: Error:Error5xx
+	mapping:
+	    *: PetStore\Presenters\*\**Presenter
+
+latte:
+	strictTypes: yes
+	strictParsing: yes
+
+di:
+	export:
+		parameters: no
+		tags: no
+
+search:
+	-	in: %appDir%
+		classes:
+			- *Factory
+			- *Facade

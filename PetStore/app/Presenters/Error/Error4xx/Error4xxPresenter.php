@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PetStore\Error\Error4xx;
+namespace PetStore\Presenters\Error\Error4xx;
 
 use Nette;
 use Nette\Application\Attributes\Requires;
