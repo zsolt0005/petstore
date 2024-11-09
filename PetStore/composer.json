@@ -35,7 +35,8 @@
 	"minimum-stability": "dev",
 	"scripts":
 	{
-		"phpstan": "vendor/bin/phpstan analyse -c phpstan.neon app/"
+		"phpstan": "vendor/bin/phpstan analyse -c phpstan.neon app/",
+		"phpstan-baseline": "vendor/bin/phpstan analyse -c phpstan.neon app/ -b phpstan-baseline.neon"
 	},
 	"config": {
 		"allow-plugins": {

@@ -30,7 +30,7 @@ final readonly class TagService
      *
      * @param Tag $tag
      *
-     * @return Result
+     * @return Result<Tag, CreateTagErrorResult>
      */
     public function create(Tag $tag): Result
     {

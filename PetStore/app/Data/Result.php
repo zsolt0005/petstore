@@ -19,8 +19,8 @@ final class Result
     /**
      * Constructor.
      *
-     * @param R|null $failure
-     * @param T|null $success
+     * @param R $failure
+     * @param T $success
      */
     public function __construct(private ?object $failure, private ?object $success)
     {
@@ -32,8 +32,8 @@ final class Result
      * @template T1 of object|null
      * @template R1 of object|null
      *
-     * @param R1|null $failure
-     * @param T1|null $success
+     * @param R1 $failure
+     * @param T1 $success
      *
      * @return Result<T1, R1>
      */

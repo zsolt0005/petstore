@@ -30,7 +30,7 @@ final readonly class CategoryService
      *
      * @param Category $category
      *
-     * @return Result
+     * @return Result<Category, CreateCategoryErrorResult>
      */
     public function create(Category $category): Result
     {

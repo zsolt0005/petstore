@@ -92,6 +92,8 @@ final class PetPresenter extends Presenter
      * @param int $id
      *
      * @return never
+     *
+     * @throws Exception
      */
     public function actionGetById(int $id): never
     {

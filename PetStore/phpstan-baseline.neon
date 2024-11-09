@@ -1,6 +1,51 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Method PetStore\\\\Services\\\\CategoryService\\:\\:create\\(\\) should return PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Category, PetStore\\\\Results\\\\CreateCategoryErrorResult\\> but returns PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Category, null\\>\\.$#"
+			count: 1
+			path: app/Services/CategoryService.php
+
+		-
+			message: "#^Method PetStore\\\\Services\\\\CategoryService\\:\\:create\\(\\) should return PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Category, PetStore\\\\Results\\\\CreateCategoryErrorResult\\> but returns PetStore\\\\Data\\\\Result\\<null, PetStore\\\\Results\\\\CreateCategoryErrorResult\\>\\.$#"
+			count: 2
+			path: app/Services/CategoryService.php
+
+		-
+			message: "#^Method PetStore\\\\Services\\\\PetService\\:\\:create\\(\\) should return PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Pet, PetStore\\\\Results\\\\CreatePetErrorResult\\> but returns PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Pet, null\\>\\.$#"
+			count: 1
+			path: app/Services/PetService.php
+
+		-
 			message: "#^Method PetStore\\\\Services\\\\PetService\\:\\:create\\(\\) should return PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Pet, PetStore\\\\Results\\\\CreatePetErrorResult\\> but returns PetStore\\\\Data\\\\Result\\<null, PetStore\\\\Results\\\\CreatePetErrorResult\\>\\.$#"
 			count: 2
 			path: app/Services/PetService.php
+
+		-
+			message: "#^Method PetStore\\\\Services\\\\PetService\\:\\:getById\\(\\) should return PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Pet, PetStore\\\\Results\\\\GetPetByIdErrorResult\\> but returns PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Pet, null\\>\\.$#"
+			count: 1
+			path: app/Services/PetService.php
+
+		-
+			message: "#^Method PetStore\\\\Services\\\\PetService\\:\\:getById\\(\\) should return PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Pet, PetStore\\\\Results\\\\GetPetByIdErrorResult\\> but returns PetStore\\\\Data\\\\Result\\<null, PetStore\\\\Results\\\\GetPetByIdErrorResult\\>\\.$#"
+			count: 2
+			path: app/Services/PetService.php
+
+		-
+			message: "#^Method PetStore\\\\Services\\\\PetService\\:\\:update\\(\\) should return PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Pet, PetStore\\\\Results\\\\UpdatePetErrorResult\\> but returns PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Pet, null\\>\\.$#"
+			count: 1
+			path: app/Services/PetService.php
+
+		-
+			message: "#^Method PetStore\\\\Services\\\\PetService\\:\\:update\\(\\) should return PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Pet, PetStore\\\\Results\\\\UpdatePetErrorResult\\> but returns PetStore\\\\Data\\\\Result\\<null, PetStore\\\\Results\\\\UpdatePetErrorResult\\>\\.$#"
+			count: 3
+			path: app/Services/PetService.php
+
+		-
+			message: "#^Method PetStore\\\\Services\\\\TagService\\:\\:create\\(\\) should return PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Tag, PetStore\\\\Results\\\\CreateTagErrorResult\\> but returns PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Tag, null\\>\\.$#"
+			count: 1
+			path: app/Services/TagService.php
+
+		-
+			message: "#^Method PetStore\\\\Services\\\\TagService\\:\\:create\\(\\) should return PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Tag, PetStore\\\\Results\\\\CreateTagErrorResult\\> but returns PetStore\\\\Data\\\\Result\\<null, PetStore\\\\Results\\\\CreateTagErrorResult\\>\\.$#"
+			count: 2
+			path: app/Services/TagService.php
