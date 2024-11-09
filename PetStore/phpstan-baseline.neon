@@ -1,0 +1,6 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method PetStore\\\\Services\\\\PetService\\:\\:create\\(\\) should return PetStore\\\\Data\\\\Result\\<PetStore\\\\Data\\\\Pet, PetStore\\\\Results\\\\CreatePetErrorResult\\> but returns PetStore\\\\Data\\\\Result\\<null, PetStore\\\\Results\\\\CreatePetErrorResult\\>\\.$#"
+			count: 2
+			path: app/Services/PetService.php

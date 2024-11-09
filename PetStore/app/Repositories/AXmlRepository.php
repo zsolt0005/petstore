@@ -2,8 +2,10 @@
 
 namespace PetStore\Repositories;
 
+use Nette\IOException;
 use Nette\Utils\FileSystem;
 use PetStore\Factories\SerializerFactory;
+use Tracy\Debugger;
 
 /**
  * Class AXmlRepository
@@ -21,6 +23,8 @@ abstract class AXmlRepository
      *
      * @param string $filePath
      * @param string $rootNodeName
+     *
+     * @throws IOException
      */
     public function __construct(private readonly string $filePath, private readonly string $rootNodeName)
     {
@@ -57,6 +61,7 @@ abstract class AXmlRepository
      * Creates a new database file with an empty root node if not exists.
      *
      * @return void
+     * @throws IOException
      */
     private function createDatabaseIfNotExists(): void
     {
@@ -85,11 +90,21 @@ abstract class AXmlRepository
             'xml_root_node_name' => $this->rootNodeName
         ]);
 
-        FileSystem::write($this->filePath, $xml);
+        try
+        {
+            FileSystem::write($this->filePath, $xml);
+        }
+        catch(IOException $e)
+        {
+            Debugger::log($e, Debugger::ERROR);
+        }
     }
 
     /**
+     * Load the data from the xml file.
+     *
      * @return T[]
+     * @throws IOException
      */
     private function load(): array
     {
@@ -101,7 +116,7 @@ abstract class AXmlRepository
         $fileContents = FileSystem::read($this->filePath);
         $serializer = SerializerFactory::buildSerializer();
 
-        /** @var T $mappedObject */
+        /** @var T[] $mappedObject */
         $mappedObject = $serializer->deserialize($fileContents, $this->getDataType() . '[]', 'xml');
 
         return $mappedObject;

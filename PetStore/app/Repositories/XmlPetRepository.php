@@ -11,42 +11,44 @@ use PetStore\Data\Pet;
  * @package PetStore\Repositories
  * @author  Zsolt Döme
  * @since   2024
+ *
+ * @extends AXmlRepository<Pet>
  */
 final class XmlPetRepository extends AXmlRepository implements IPetRepository
 {
     /** @var Pet[] Data. */
-    private array $pets = [];
-
-    /** @inheritDoc */
-    public function create(Pet $data): bool
-    {
-        $existingPetData = Arrays::first($this->pets, static fn(Pet $d) => $d->id === $data->id);
-        if($existingPetData !== null)
-        {
-            return true;
-        }
-
-        $this->pets[] = $data;
-        $this->save();
-
-        return true;
-    }
+    private array $data = [];
 
     /** @inheritDoc */
     protected function getData(): array
     {
-        return $this->pets;
+        return $this->data;
     }
 
     /** @inheritDoc */
     protected function setData(array $data): void
     {
-        $this->pets = $data;
+        $this->data = $data;
     }
 
     /** @inheritDoc */
     protected function getDataType(): string
     {
         return Pet::class;
+    }
+
+    /** @inheritDoc */
+    public function create(Pet $data): bool
+    {
+        $existingData = Arrays::first($this->data, static fn(Pet $d) => $d->id === $data->id);
+        if($existingData !== null)
+        {
+            return true;
+        }
+
+        $this->data[] = $data;
+        $this->save();
+
+        return true;
     }
 }

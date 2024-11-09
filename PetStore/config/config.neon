@@ -11,6 +11,7 @@ services:
 
     # Repositories
     - PetStore\Repositories\XmlPetRepository('%appDir%/../db/pet-store.xml', 'Pets')
+    - PetStore\Repositories\XmlCategoryRepository('%appDir%/../db/pet-category-store.xml', 'Categories')
 
 extensions:
 	apiRouter: Contributte\ApiRouter\DI\ApiRouterExtension

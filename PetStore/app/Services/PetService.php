@@ -3,7 +3,10 @@
 namespace PetStore\Services;
 
 use PetStore\Data\Pet;
+use PetStore\Data\Result;
+use PetStore\Repositories\ICategoryRepository;
 use PetStore\Repositories\IPetRepository;
+use PetStore\Results\CreatePetErrorResult;
 
 /**
  * Class PetService
@@ -18,8 +21,12 @@ final readonly class PetService
      * Constructor.
      *
      * @param IPetRepository $repository
+     * @param ICategoryRepository $categoryRepository
      */
-    public function __construct(private IPetRepository $repository)
+    public function __construct(
+        private IPetRepository $repository,
+        private ICategoryRepository $categoryRepository
+    )
     {
     }
 
@@ -28,12 +35,21 @@ final readonly class PetService
      *
      * @param Pet $data
      *
-     * @return Pet|null
+     * @return Result<Pet, CreatePetErrorResult>
      */
-    public function create(Pet $data): ?Pet
+    public function create(Pet $data): Result
     {
-        $petCreated = $this->repository->create($data);
+        if(!$this->categoryRepository->exists($data->category->id))
+        {
+            return Result::of(failure: CreatePetErrorResult::CATEGORY_DOES_NOT_EXIST);
+        }
 
-        return $petCreated ? $data : null;
+        $petCreated = $this->repository->create($data);
+        if($petCreated)
+        {
+            Result::of(success: $data);
+        }
+
+        return Result::of(failure: CreatePetErrorResult::FAILED);
     }
 }
