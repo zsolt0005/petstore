@@ -142,12 +142,6 @@ final class PetPresenter extends Presenter
     {
         $request = $this->getHttpRequest();
 
-        // This endpoint returns an array of object, which is not supported in XML format
-        if($request->getHeader('accept') === 'application/xml')
-        {
-            $this->sendResponse(new JsonResponse(null, IResponse::S415_UnsupportedMediaType));
-        }
-
         $result = $this->service->findByStatus($status);
 
         $this->sendResponse(

@@ -33,10 +33,13 @@ final class ResponseUtils
      */
     public static function mapDataToResponse(IRequest $request, mixed $data): Response
     {
-        return match ($request->getHeader('accept'))
+        $acceptHeader = $request->getHeader('accept');
+
+        if($acceptHeader === 'application/xml' && is_object($data))
         {
-            'application/xml' => new XmlResponse($data),
-            default => new JsonResponse($data)
-        };
+            return new XmlResponse($data);
+        }
+
+        return new JsonResponse($data);
     }
 }

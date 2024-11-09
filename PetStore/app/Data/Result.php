@@ -35,7 +35,7 @@ final class Result
      * @param R1 $failure
      * @param T1 $success
      *
-     * @return Result<T1, R1>
+     * @return Result<R1, T1>
      */
     public static function of(?object $failure = null, mixed $success = null): Result
     {

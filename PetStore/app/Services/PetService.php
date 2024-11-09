@@ -39,7 +39,7 @@ final readonly class PetService
      *
      * @param Pet $data
      *
-     * @return Result<Pet, CreatePetErrorResult>
+     * @return Result<CreatePetErrorResult, Pet>
      */
     public function create(Pet $data): Result
     {
@@ -68,7 +68,7 @@ final readonly class PetService
      *
      * @param Pet $data
      *
-     * @return Result<Pet, UpdatePetErrorResult>
+     * @return Result<UpdatePetErrorResult, Pet>
      */
     public function update(Pet $data): Result
     {
@@ -102,7 +102,7 @@ final readonly class PetService
      *
      * @param int $id
      *
-     * @return Result<Pet, GetPetByIdErrorResult>
+     * @return Result<GetPetByIdErrorResult, Pet>
      */
     public function getById(int $id): Result
     {
@@ -143,7 +143,7 @@ final readonly class PetService
      *
      * @param string $status
      *
-     * @return Result<Pet[], FindPetByStatusErrorResult>
+     * @return Result<FindPetByStatusErrorResult, Pet[]>
      */
     public function findByStatus(string $status): Result
     {
