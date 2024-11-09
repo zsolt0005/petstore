@@ -5,16 +5,8 @@ namespace PetStore\Data;
 use Nette\Application\Response;
 use Nette\Http\IRequest;
 use Nette\Http\IResponse;
+use PetStore\Factories\SerializerFactory;
 use ReflectionClass;
-use ReflectionException;
-use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AttributeLoader;
-use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * Class JsonResponse
@@ -53,17 +45,7 @@ final readonly class XmlResponse implements Response
         $httpResponse->setContentType($this->contentType, 'utf-8');
         $httpResponse->setCode($this->responseCode);
 
-        $encoders = [new XmlEncoder(), new JsonEncoder()];
-        $normalizers = [
-            new ArrayDenormalizer(),
-            new ObjectNormalizer(
-                classMetadataFactory: new ClassMetadataFactory(new AttributeLoader()),
-                propertyTypeExtractor: new PhpDocExtractor()
-            )
-        ];
-
-        $serializer = new Serializer($normalizers, $encoders);
-
+        $serializer = SerializerFactory::buildSerializer();
         if($this->payload !== null)
         {
             $reflectionClass = new ReflectionClass($this->payload);

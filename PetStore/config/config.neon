@@ -10,7 +10,7 @@ services:
     - PetStore\Services\PetService
 
     # Repositories
-    - PetStore\Repositories\XmlPetRepository
+    - PetStore\Repositories\XmlPetRepository('%appDir%/../db/pet-store.xml', 'Pets')
 
 extensions:
 	apiRouter: Contributte\ApiRouter\DI\ApiRouterExtension

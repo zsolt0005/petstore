@@ -12,9 +12,9 @@ use PetStore\Data\Pet;
  * @author  Zsolt Döme
  * @since   2024
  */
-final class XmlPetRepository implements IPetRepository
+final class XmlPetRepository extends AXmlRepository implements IPetRepository
 {
-    /** @var Pet[] */
+    /** @var Pet[] Data. */
     private array $pets = [];
 
     /** @inheritDoc */
@@ -27,6 +27,26 @@ final class XmlPetRepository implements IPetRepository
         }
 
         $this->pets[] = $data;
+        $this->save();
+
         return true;
+    }
+
+    /** @inheritDoc */
+    protected function getData(): array
+    {
+        return $this->pets;
+    }
+
+    /** @inheritDoc */
+    protected function setData(array $data): void
+    {
+        $this->pets = $data;
+    }
+
+    /** @inheritDoc */
+    protected function getDataType(): string
+    {
+        return Pet::class;
     }
 }

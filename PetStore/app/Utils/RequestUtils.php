@@ -7,16 +7,7 @@ use JsonMapper_Exception;
 use Nette\Http\IRequest;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
-use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
-use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Extractor\ObjectPropertyListExtractor;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AttributeLoader;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
+use PetStore\Factories\SerializerFactory;
 use Throwable;
 
 /**
@@ -112,16 +103,7 @@ final class RequestUtils
      */
     private static function mapFromXml(string $rawBody, string $type): ?object
     {
-        $encoders = [new XmlEncoder()];
-        $normalizers = [
-            new ArrayDenormalizer(),
-            new ObjectNormalizer(
-                classMetadataFactory: new ClassMetadataFactory(new AttributeLoader()),
-                propertyTypeExtractor: new PhpDocExtractor()
-            )
-        ];
-
-        $serializer = new Serializer($normalizers, $encoders);
+        $serializer = SerializerFactory::buildSerializer();
         try
         {
             /** @var T $mappedObject */
