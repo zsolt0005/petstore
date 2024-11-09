@@ -2,6 +2,6 @@ parameters:
   level: 9
 
   exceptions:
-        check:
-            tooWideThrowType: true
-            missingCheckedExceptionInThrows: true
+    check:
+      tooWideThrowType: true
+      missingCheckedExceptionInThrows: true

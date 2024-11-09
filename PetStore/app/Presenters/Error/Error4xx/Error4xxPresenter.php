@@ -1,20 +1,23 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace PetStore\Presenters\Error\Error4xx;
 
-use Nette;
 use Nette\Application\Attributes\Requires;
-
+use Nette\Application\BadRequestException;
+use Nette\Application\UI\Presenter;
 
 /**
  * Handles 4xx HTTP error responses.
  */
 #[Requires(methods: '*', forward: true)]
-final class Error4xxPresenter extends Nette\Application\UI\Presenter
+final class Error4xxPresenter extends Presenter
 {
-	public function renderDefault(Nette\Application\BadRequestException $exception): void
+    /**
+     * @param BadRequestException $exception
+     *
+     * @return void
+     */
+	public function renderDefault(BadRequestException $exception): void
 	{
 		// renders the appropriate error template based on the HTTP status code
 		$code = $exception->getCode();
