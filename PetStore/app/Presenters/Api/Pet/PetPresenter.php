@@ -80,7 +80,7 @@ final class PetPresenter extends Presenter
                 {
                     UpdatePetErrorResult::INVALID_ID => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest)),
                     UpdatePetErrorResult::PET_NOT_FOUND => $this->sendResponse(new JsonResponse(null, IResponse::S404_NotFound)),
-                    UpdatePetErrorResult::CATEGORY_NOT_FOUND => $this->sendResponse(new JsonResponse(null, IResponse::S405_MethodNotAllowed))
+                    default => $this->sendResponse(new JsonResponse(null, IResponse::S405_MethodNotAllowed))
                 }
             )
         );

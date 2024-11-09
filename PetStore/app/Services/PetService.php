@@ -41,6 +41,12 @@ final readonly class PetService
      */
     public function create(Pet $data): Result
     {
+        $isValid = $this->validatePetData($data);
+        if(!$isValid)
+        {
+            return Result::of(failure: CreatePetErrorResult::INVALID_INPUT);
+        }
+
         if(!$this->categoryRepository->exists($data->category->id))
         {
             return Result::of(failure: CreatePetErrorResult::CATEGORY_NOT_FOUND);
@@ -67,6 +73,12 @@ final readonly class PetService
         if($data->id <= 0)
         {
             return Result::of(failure: UpdatePetErrorResult::INVALID_ID);
+        }
+
+        $isValid = $this->validatePetData($data);
+        if(!$isValid)
+        {
+            return Result::of(failure: UpdatePetErrorResult::INVALID_INPUT);
         }
 
         if(!$this->categoryRepository->exists($data->category->id))
@@ -104,5 +116,30 @@ final readonly class PetService
         }
 
         return Result::of(success: $data);
+    }
+
+    private function validatePetData(Pet $data): bool
+    {
+        if(!isset($data->id) || $data->id <= 0)
+        {
+            return false;
+        }
+
+        if(empty($data->name))
+        {
+            return false;
+        }
+
+        if(!isset($data->category))
+        {
+            return false;
+        }
+
+        if(empty($data->status))
+        {
+            return false;
+        }
+
+        return true;
     }
 }
