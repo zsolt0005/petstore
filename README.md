@@ -2,7 +2,6 @@
 
 
 # TODO
-- GET /pet/findByTags
 - POST /pet/{petId}
 - POST /pet/{petId}/uploadImage
 

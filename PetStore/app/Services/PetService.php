@@ -7,8 +7,8 @@ use PetStore\Data\Result;
 use PetStore\Repositories\ICategoryRepository;
 use PetStore\Repositories\IPetRepository;
 use PetStore\Results\CreatePetErrorResult;
-use PetStore\Results\DeletePetByIdErrorResult;
 use PetStore\Results\FindPetByStatusErrorResult;
+use PetStore\Results\FindPetByTagsErrorResult;
 use PetStore\Results\GetPetByIdErrorResult;
 use PetStore\Results\UpdatePetErrorResult;
 
@@ -155,6 +155,25 @@ final readonly class PetService
         return Result::of(success: $this->repository->findByStatus($status));
     }
 
+    /**
+     * Finds all the pets that have at least one of the tags.
+     *
+     * @param string $tags
+     *
+     * @return Result<FindPetByTagsErrorResult, Pet[]>
+     */
+    public function findByTags(string $tags): Result
+    {
+        $cleanedTags = explode(',', str_replace(' ', '', $tags));
+
+        if(empty($cleanedTags))
+        {
+            return Result::of(failure: FindPetByTagsErrorResult::INVALID_INPUT);
+        }
+
+        return Result::of(success: $this->repository->findByTags($cleanedTags));
+    }
+
     private function validatePetData(Pet $data): bool
     {
         if(!isset($data->id) || $data->id <= 0)
@@ -173,6 +192,11 @@ final readonly class PetService
         }
 
         if(empty($data->status))
+        {
+            return false;
+        }
+
+        if(count($data->tags) === 0)
         {
             return false;
         }

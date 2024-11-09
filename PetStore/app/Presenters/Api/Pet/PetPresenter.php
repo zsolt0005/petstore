@@ -9,6 +9,7 @@ use PetStore\Data\JsonResponse;
 use PetStore\Data\Pet;
 use PetStore\Results\CreatePetErrorResult;
 use PetStore\Results\FindPetByStatusErrorResult;
+use PetStore\Results\FindPetByTagsErrorResult;
 use PetStore\Results\GetPetByIdErrorResult;
 use PetStore\Results\UpdatePetErrorResult;
 use PetStore\Services\PetService;
@@ -150,6 +151,29 @@ final class PetPresenter extends Presenter
                 failure: fn(FindPetByStatusErrorResult $errorResult) => match ($errorResult)
                 {
                     FindPetByStatusErrorResult::INVALID_STATUS => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest))
+                }
+            )
+        );
+    }
+
+    /**
+     * Finds all the pets that have at least one of the tags.
+     *
+     * @return never
+     * @throws Exception
+     */
+    public function actionFindByTags(): never
+    {
+        $request = $this->getHttpRequest();
+
+        $result = $this->service->findByTags($this->getRequest()->getParameter('tags') ?? '');
+
+        $this->sendResponse(
+            $result->match(
+                success: fn(array $pets) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pets)),
+                failure: fn(FindPetByTagsErrorResult $errorResult) => match ($errorResult)
+                {
+                    FindPetByTagsErrorResult::INVALID_INPUT => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest))
                 }
             )
         );

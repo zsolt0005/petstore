@@ -23,20 +23,26 @@ final class RouterFactory
             'methods' => [
                 'POST' => 'create',
                 'PUT' => 'update'
-            ],
+            ]
         ]));
 
         $router->add(new ApiRoute('/api/v1/pet/findByStatus', 'Api:Pet', [
             'methods' => [
                 'GET' => 'findByStatus'
-            ],
+            ]
+        ]));
+
+        $router->add(new ApiRoute('/api/v1/pet/findByTags', 'Api:Pet', [
+            'methods' => [
+                'GET' => 'findByTags'
+            ]
         ]));
 
         $router->add(new ApiRoute('/api/v1/pet/<id>', 'Api:Pet', [
             'methods' => [
                 'GET' => 'getById',
                 'DELETE' => 'deleteById'
-            ],
+            ]
         ]));
 
         # [API] Categories

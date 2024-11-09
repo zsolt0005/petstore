@@ -57,4 +57,13 @@ interface IPetRepository
      * @return Pet[]
      */
     public function findByStatus(string $status): array;
+
+    /**
+     * Finds all the pets that have at least one of the tags.
+     *
+     * @param string[] $tags
+     *
+     * @return Pet[]
+     */
+    public function findByTags(array $tags): array;
 }

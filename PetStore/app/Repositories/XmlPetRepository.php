@@ -4,6 +4,7 @@ namespace PetStore\Repositories;
 
 use Nette\Utils\Arrays;
 use PetStore\Data\Pet;
+use PetStore\Data\Tag;
 
 /**
  * Class PetRepository
@@ -92,5 +93,18 @@ final class XmlPetRepository extends AXmlRepository implements IPetRepository
     public function findByStatus(string $status): array
     {
         return Arrays::filter($this->data, static fn(Pet $d) => $d->status === $status);
+    }
+
+    /** @inheritDoc */
+    public function findByTags(array $tags): array
+    {
+        return Arrays::filter(
+            $this->data,
+            function(Pet $d) use ($tags): bool
+            {
+                $tagIds = Arrays::map($d->tags, static fn(Tag $tag) => $tag->id);
+                return Arrays::some($tagIds, static fn(int $tagId) => Arrays::contains($tags, (string) $tagId));
+            }
+        );
     }
 }

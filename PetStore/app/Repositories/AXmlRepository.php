@@ -5,6 +5,7 @@ namespace PetStore\Repositories;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use PetStore\Factories\SerializerFactory;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Throwable;
 use Tracy\Debugger;
 
@@ -88,7 +89,10 @@ abstract class AXmlRepository
     {
         $serializer = SerializerFactory::buildSerializer();
         $xml = $serializer->serialize($this->getData(), 'xml', [
-            'xml_root_node_name' => $this->rootNodeName
+            'xml_root_node_name' => $this->rootNodeName,
+            AbstractObjectNormalizer::PRESERVE_EMPTY_OBJECTS => false,
+            AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
+            AbstractObjectNormalizer::SKIP_UNINITIALIZED_VALUES => true,
         ]);
 
         try
