@@ -5,18 +5,18 @@ namespace PetStore\Tests;
 use PetStore\Tests\Data\Pet;
 
 /**
- * Class ActionGetByIdTest
+ * Class ActionDeleteByIdTest
  *
  * @package PetStore\Tests
  * @author  Zsolt Döme
  * @since   2024
  */
-final class ActionGetByIdTest extends ATest
+final class ActionDeleteByIdTest extends ATest
 {
-    public function test_NonExistingPet_ShouldReturn_404(): void
+    public function test_NonExistingPet_ShouldReturn_200(): void
     {
-        HttpRequestTester::get('/pet/1')
-            ->assertResponseStatusCode(404)
+        HttpRequestTester::delete('/pet/1')
+            ->assertResponseStatusCode(200)
             ->test();
     }
 
@@ -38,17 +38,24 @@ final class ActionGetByIdTest extends ATest
             ->assertResponseStatusCode(200)
             ->test();
 
-        // Tests
+        // Assert pet exists before deletion
         HttpRequestTester::get('/pet/' . $petId)
             ->assertResponseStatusCode(200)
             ->assertResponseJsonData(Pet::class, $pet)
             ->test();
 
-        // Cleanup
-        $this->deleteCategory($categoryId);
-        $this->deleteTag($tagId);
+        // Test case
         HttpRequestTester::delete('/pet/' . $petId)
             ->assertResponseStatusCode(200)
             ->test();
+
+        // Assert pet is deleted
+        HttpRequestTester::get('/pet/' . $petId)
+            ->assertResponseStatusCode(404)
+            ->test();
+
+        // Cleanup
+        $this->deleteCategory($categoryId);
+        $this->deleteTag($tagId);
     }
 }
