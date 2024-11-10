@@ -1,7 +1,7 @@
 #!/bin/bash
 
-mkdir -p IntegrationTests/log/Integration
-chmod a+w IntegrationTests/log/Integration
+mkdir -p IntegrationTests/log
+chmod a+w IntegrationTests/log
 
 # Start Docker Compose
 docker compose -f docker-compose-integration.yml up --build --abort-on-container-exit
