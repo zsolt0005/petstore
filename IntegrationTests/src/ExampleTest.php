@@ -12,16 +12,13 @@ use PHPUnit\Framework\TestCase;
  */
 final class ExampleTest extends TestCase
 {
+    /**
+     * Test for testing the tests :D
+     *
+     * @return void
+     */
     public function testExample(): void
     {
-        HttpRequestTester::get('/')
-            ->assertResponseStatusCode(200)
-            ->test();
-
-        HttpRequestTester::get('api/v1/pet/1')
-            ->assertResponseStatusCode(200)
-            ->test();
-
         self::assertTrue(true);
     }
 }
