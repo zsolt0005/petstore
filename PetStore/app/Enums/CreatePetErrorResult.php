@@ -1,6 +1,6 @@
 <?php
 
-namespace PetStore\Results;
+namespace PetStore\Enums;
 
 enum CreatePetErrorResult
 {

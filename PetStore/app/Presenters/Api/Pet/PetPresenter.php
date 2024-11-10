@@ -7,14 +7,14 @@ use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
 use PetStore\Data\JsonResponse;
 use PetStore\Data\Pet;
-use PetStore\Results\CreatePetErrorResult;
-use PetStore\Results\FindPetByStatusErrorResult;
-use PetStore\Results\FindPetByTagsErrorResult;
-use PetStore\Results\GetPetByIdErrorResult;
-use PetStore\Results\UpdatePetErrorResult;
+use PetStore\Enums\CreatePetErrorResult;
+use PetStore\Enums\FindPetByStatusErrorResult;
+use PetStore\Enums\GetPetByIdErrorResult;
+use PetStore\Enums\UpdatePetErrorResult;
 use PetStore\Services\PetService;
 use PetStore\Utils\RequestUtils;
 use PetStore\Utils\ResponseUtils;
+use PetStore\Utils\TypeUtils;
 
 /**
  * Class PetController
@@ -99,11 +99,10 @@ final class PetPresenter extends Presenter
         $httpRequest = $this->getHttpRequest();
         $request = $this->getRequest();
 
-        $result = $this->service->partialUpdate(
-            $id,
-            $request->getParameter('name') ?? '',
-            $request->getParameter('status') ?? '',
-        );
+        $name = TypeUtils::convertToString($request?->getParameter('name'));
+        $status = TypeUtils::convertToString($request?->getParameter('status'));
+
+        $result = $this->service->partialUpdate($id, $name, $status);
 
         $this->sendResponse(
             $result->match(
@@ -198,16 +197,31 @@ final class PetPresenter extends Presenter
     {
         $request = $this->getHttpRequest();
 
-        $result = $this->service->findByTags($this->getRequest()->getParameter('tags') ?? '');
+        $tags = TypeUtils::convertToString($this->getRequest()?->getParameter('tags'));
+        if($tags === null)
+        {
+            $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest));
+        }
 
-        $this->sendResponse(
-            $result->match(
-                success: fn(array $pets) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pets)),
-                failure: fn(FindPetByTagsErrorResult $errorResult) => match ($errorResult)
-                {
-                    FindPetByTagsErrorResult::INVALID_INPUT => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest))
-                }
-            )
-        );
+        $pets = $this->service->findByTags($tags);
+        $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pets));
+    }
+
+    /**
+     * Uploads an image for a Pet.
+     *
+     * @param int $id
+     *
+     * @return never
+     * @throws Exception
+     */
+    public function actionUploadImage(int $id): never
+    {
+        $request = $this->getHttpRequest();
+        $filesToUpload = $request->getFiles();
+
+        $fileUploadResponse = $this->service->uploadImagesById($id, $filesToUpload);
+
+        $this->sendResponse(new JsonResponse($fileUploadResponse, $fileUploadResponse->code));
     }
 }

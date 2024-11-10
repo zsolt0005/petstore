@@ -1,4 +1,6 @@
 parameters:
+    pet:
+        imagePath: 'images'
 
 services:
     router: PetStore\Router\RouterFactory::createRouter
@@ -7,6 +9,9 @@ services:
     - PetStore\Presenters\Api\Pet\PetPresenter
     - PetStore\Presenters\Api\Category\CategoryPresenter
     - PetStore\Presenters\Api\Tag\TagPresenter
+
+    # Providers
+    - PetStore\Providers\PathProvider(%pet.imagePath%)
 
     # Services
     - PetStore\Services\PetService

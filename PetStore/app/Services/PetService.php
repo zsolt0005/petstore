@@ -2,15 +2,20 @@
 
 namespace PetStore\Services;
 
+use Nette\Http\FileUpload;
+use Nette\Utils\Arrays;
+use PetStore\Data\FileUploadResponse;
 use PetStore\Data\Pet;
 use PetStore\Data\Result;
+use PetStore\Providers\PathProvider;
 use PetStore\Repositories\ICategoryRepository;
 use PetStore\Repositories\IPetRepository;
-use PetStore\Results\CreatePetErrorResult;
-use PetStore\Results\FindPetByStatusErrorResult;
-use PetStore\Results\FindPetByTagsErrorResult;
-use PetStore\Results\GetPetByIdErrorResult;
-use PetStore\Results\UpdatePetErrorResult;
+use PetStore\Enums\CreatePetErrorResult;
+use PetStore\Enums\FindPetByStatusErrorResult;
+use PetStore\Enums\GetPetByIdErrorResult;
+use PetStore\Enums\UpdatePetErrorResult;
+use Throwable;
+use Tracy\Debugger;
 
 /**
  * Class PetService
@@ -26,10 +31,12 @@ final readonly class PetService
      *
      * @param IPetRepository $repository
      * @param ICategoryRepository $categoryRepository
+     * @param PathProvider $pathProvider
      */
     public function __construct(
         private IPetRepository $repository,
-        private ICategoryRepository $categoryRepository
+        private ICategoryRepository $categoryRepository,
+        private PathProvider $pathProvider,
     )
     {
     }
@@ -101,12 +108,12 @@ final readonly class PetService
      * PARTIALLY Updates a Pet.
      *
      * @param int $id
-     * @param string $name
-     * @param string $status
+     * @param string|null $name
+     * @param string|null $status
      *
      * @return Result<UpdatePetErrorResult, Pet>
      */
-    public function partialUpdate(int $id, string $name, string $status): Result
+    public function partialUpdate(int $id, ?string $name, ?string $status): Result
     {
         if($id <= 0)
         {
@@ -196,20 +203,69 @@ final readonly class PetService
      *
      * @param string $tags
      *
-     * @return Result<FindPetByTagsErrorResult, Pet[]>
+     * @return Pet[]
      */
-    public function findByTags(string $tags): Result
+    public function findByTags(string $tags): array
     {
         $cleanedTags = explode(',', str_replace(' ', '', $tags));
 
-        if(empty($cleanedTags))
-        {
-            return Result::of(failure: FindPetByTagsErrorResult::INVALID_INPUT);
-        }
-
-        return Result::of(success: $this->repository->findByTags($cleanedTags));
+        return $this->repository->findByTags($cleanedTags);
     }
 
+    /**
+     * Uploads images for the given Pet.
+     *
+     * @param int $id
+     * @param FileUpload[] $files
+     *
+     * @return FileUploadResponse
+     */
+    public function uploadImagesById(int $id, array $files): FileUploadResponse
+    {
+        if(count($files) === 0)
+        {
+            return new FileUploadResponse(400, 'failed', 'At least one file is required.');
+        }
+
+        $pet = $this->repository->getById($id);
+        if($pet === null)
+        {
+            return new FileUploadResponse(404, 'failed', 'Pet not found.');
+        }
+
+        $hasInvalidFiles = Arrays::some($files, static fn(FileUpload $file) => !$file->isImage());
+        if($hasInvalidFiles)
+        {
+            return new FileUploadResponse(400, 'failed', 'All files must be an image.');
+        }
+
+        foreach($files as $file)
+        {
+            try
+            {
+                $imagePath = $this->getNextImagePath($pet, $file);
+                $file->move($imagePath);
+            }
+            catch (Throwable $e)
+            {
+                Debugger::log($e, Debugger::ERROR);
+                return new FileUploadResponse(500, 'failed', 'Failed to upload images.');
+            }
+
+            $pet->photoUrls[] = $imagePath;
+        }
+
+        $this->repository->update($pet);
+        return new FileUploadResponse(200, 'success', 'Files uploaded successfully.');
+    }
+
+    /**
+     * Validates pet data.
+     *
+     * @param Pet $data
+     *
+     * @return bool
+     */
     private function validatePetData(Pet $data): bool
     {
         if(!isset($data->id) || $data->id <= 0)
@@ -238,5 +294,23 @@ final readonly class PetService
         }
 
         return true;
+    }
+
+    /**
+     * Returns the next pet image path.
+     *
+     * @param Pet $pet
+     * @param FileUpload $file
+     *
+     * @return string
+     */
+    private function getNextImagePath(Pet $pet, FileUpload $file): string
+    {
+        $basePath = $this->pathProvider->petImagePath;
+
+        $fileName = count($pet->photoUrls) + 1;
+        $fileExtension = $file->getSuggestedExtension();
+
+        return $basePath . '/' . $pet->id . '/' . $fileName . '.' . $fileExtension;
     }
 }

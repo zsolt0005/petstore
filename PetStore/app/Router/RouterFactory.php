@@ -38,6 +38,12 @@ final class RouterFactory
             ]
         ]));
 
+        $router->add(new ApiRoute('/api/v1/pet/<id>/uploadImage', 'Api:Pet', [
+            'methods' => [
+                'POST' => 'uploadImage'
+            ]
+        ]));
+
         $router->add(new ApiRoute('/api/v1/pet/<id>', 'Api:Pet', [
             'methods' => [
                 'GET' => 'getById',
