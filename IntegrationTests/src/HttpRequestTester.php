@@ -129,6 +129,34 @@ final class HttpRequestTester
     }
 
     /**
+     * Adds multipart files to the request.
+     *
+     * @param array<array{name: string, type: string, path: string}> $files
+     *
+     * @return self
+     */
+    public function files(array $files): self
+    {
+        $multipart = [];
+
+        foreach ($files as $file)
+        {
+            $path = __DIR__ . (str_starts_with($file['path'], '/') ? '' : '/') . $file['path'];
+            $fileContents = file_get_contents($path);
+
+            $multipart[] = [
+                'name'     => $file['name'],
+                'contents' => $fileContents,
+                'filename' => $file['name'] . '.' . $file['type']
+            ];
+        }
+
+        $this->options[RequestOptions::MULTIPART] = $multipart;
+
+        return $this;
+    }
+
+    /**
      * Sets the cookie needed to trigger the XDebugger in PHPStorm.
      *
      * @return self
