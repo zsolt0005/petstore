@@ -5,7 +5,7 @@ namespace PetStore\Services;
 use PetStore\Data\Result;
 use PetStore\Data\Tag;
 use PetStore\Repositories\ITagRepository;
-use PetStore\Results\CreateTagErrorResult;
+use PetStore\Enums\CreateTagErrorResult;
 
 /**
  * Class TagService

@@ -7,7 +7,7 @@ use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
 use PetStore\Data\Category;
 use PetStore\Data\JsonResponse;
-use PetStore\Results\CreateCategoryErrorResult;
+use PetStore\Enums\CreateCategoryErrorResult;
 use PetStore\Services\CategoryService;
 use PetStore\Utils\RequestUtils;
 use PetStore\Utils\ResponseUtils;

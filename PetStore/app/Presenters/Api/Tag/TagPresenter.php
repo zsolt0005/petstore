@@ -7,7 +7,7 @@ use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
 use PetStore\Data\JsonResponse;
 use PetStore\Data\Tag;
-use PetStore\Results\CreateTagErrorResult;
+use PetStore\Enums\CreateTagErrorResult;
 use PetStore\Services\TagService;
 use PetStore\Utils\RequestUtils;
 use PetStore\Utils\ResponseUtils;

@@ -5,7 +5,7 @@ namespace PetStore\Services;
 use PetStore\Data\Category;
 use PetStore\Data\Result;
 use PetStore\Repositories\ICategoryRepository;
-use PetStore\Results\CreateCategoryErrorResult;
+use PetStore\Enums\CreateCategoryErrorResult;
 
 /**
  * Class CategoryService
