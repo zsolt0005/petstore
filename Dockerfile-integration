@@ -1,0 +1,55 @@
+# php-app
+FROM php:8.3.13-fpm-bullseye as php-app
+
+RUN apt-get update
+RUN apt-get install -y git
+RUN apt-get install -y nano
+RUN apt-get install -y zlib1g-dev
+RUN apt-get install -y libpng-dev
+RUN apt-get install -y libjpeg-dev
+RUN apt-get install -y libjpeg62-turbo-dev
+RUN apt-get install -y libfreetype6-dev
+
+RUN pecl install xdebug-3.3.2 \
+ && docker-php-ext-enable xdebug
+
+RUN docker-php-ext-install gd \
+ && docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg
+
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+WORKDIR /var/www/html
+COPY PetStore/composer.json .
+COPY PetStore/composer.lock .
+
+RUN composer install --no-autoloader --prefer-dist --no-dev
+
+COPY  PetStore/app ./app
+COPY  PetStore/config ./config
+COPY  PetStore/www ./www
+
+RUN mkdir ./log
+RUN chmod a+w ./log
+
+RUN composer dump-autoload --optimize
+
+
+# Build tests
+FROM php:8.3.13-fpm-bullseye AS build-test
+
+RUN apt-get update
+RUN apt-get install -y git
+RUN apt-get install -y zip
+
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+WORKDIR /src
+
+COPY IntegrationTests/composer.json .
+COPY IntegrationTests/composer.lock .
+
+RUN composer install --no-autoloader --prefer-dist
+COPY IntegrationTests/. .
+RUN composer dump-autoload --optimize
+
+RUN echo "zend_extension=xdebug.so" > /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini

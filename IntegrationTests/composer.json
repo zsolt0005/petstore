@@ -1,0 +1,25 @@
+{
+	"name": "petstore/integration-tests",
+	"require": {
+		"php": "^8.3"
+	},
+	"require-dev": {
+		"phpstan/phpstan": "^1.12.8",
+		"phpunit/phpunit": "^11.4.3"
+	},
+	"autoload": {
+		"psr-4": {
+			"PetStore\\Tests\\": "src"
+		}
+	},
+	"scripts":
+	{
+		"phpstan": "vendor/bin/phpstan analyse -c phpstan.neon src/",
+		"run-integration-tests": "vendor/bin/phpunit src"
+	},
+	"config": {
+		"allow-plugins": {
+			"symfony/thanks": true
+		}
+	}
+}
