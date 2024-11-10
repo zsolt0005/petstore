@@ -5,13 +5,13 @@ namespace PetStore\Tests;
 use PetStore\Tests\Data\Pet;
 
 /**
- * Class ActionCreateTest
+ * Class ActionUpdateTest
  *
  * @package PetStore\Tests
  * @author  Zsolt Döme
  * @since   2024
  */
-final class ActionCreateTest extends ATest
+final class ActionUpdateTest extends ATest
 {
     /**
      * @return array<string, array<int, mixed>>
@@ -19,7 +19,6 @@ final class ActionCreateTest extends ATest
     public static function provideTest_InvalidInput_ShouldReturn_405Data(): array
     {
         return [
-            'Invalid ID' => [0, 'Dog 1', 'available'],
             'Empty name' => [1, '', 'available'],
             'Empty status' => [1, 'Dog 1', '']
         ];
@@ -42,9 +41,24 @@ final class ActionCreateTest extends ATest
         $pet->category = $this->prepareCategoryData(1, 'Dogs');
         $pet->tags = [$this->prepareTagData(1, 'Black')];
 
-        HttpRequestTester::post('/pet')
+        HttpRequestTester::put('/pet')
             ->json($pet)
             ->assertResponseStatusCode(405)
+            ->test();
+    }
+
+    public function test_InvalidId_ShouldReturn_400(): void
+    {
+        $pet = new Pet();
+        $pet->id = 0;
+        $pet->name = 'Dog 1';
+        $pet->status = 'available';
+        $pet->category = $this->prepareCategoryData(1, 'Dogs');
+        $pet->tags = [$this->prepareTagData(1, 'Black')];
+
+        HttpRequestTester::put('/pet')
+            ->json($pet)
+            ->assertResponseStatusCode(400)
             ->test();
     }
 
@@ -57,7 +71,7 @@ final class ActionCreateTest extends ATest
         $pet->category = $this->prepareCategoryData(1, 'Dogs');
         $pet->tags = [$this->prepareTagData(1, 'Black')];
 
-        HttpRequestTester::post('/pet')
+        HttpRequestTester::put('/pet')
             ->json($pet)
             ->assertResponseStatusCode(405)
             ->test();
@@ -74,7 +88,7 @@ final class ActionCreateTest extends ATest
         $pet->category = $this->createCategory($categoryId, 'Dogs');
         $pet->tags = [$this->prepareTagData(1, 'Black')];
 
-        HttpRequestTester::post('/pet')
+        HttpRequestTester::put('/pet')
             ->json($pet)
             ->assertResponseStatusCode(405)
             ->test();
@@ -95,7 +109,7 @@ final class ActionCreateTest extends ATest
         $pet->category = $this->createCategory($categoryId, 'Dogs');
         $pet->tags = [$this->createTag($tagId, 'Black'), $this->prepareTagData(2, 'Red')];
 
-        HttpRequestTester::post('/pet')
+        HttpRequestTester::put('/pet')
             ->json($pet)
             ->assertResponseStatusCode(405)
             ->test();
@@ -105,7 +119,7 @@ final class ActionCreateTest extends ATest
         $this->deleteTag($tagId);
     }
 
-    public function test_ValidPet_ShouldReturn_200(): void
+    public function test_NonExistingPet_ShouldReturn_404(): void
     {
         $categoryId = 1;
         $tagId = 1;
@@ -118,21 +132,19 @@ final class ActionCreateTest extends ATest
         $pet->category = $this->createCategory($categoryId, 'Dogs');
         $pet->tags = [$this->createTag(1, 'Black')];
 
-        HttpRequestTester::post('/pet')
+        HttpRequestTester::put('/pet')
             ->json($pet)
-            ->assertResponseStatusCode(200)
+            ->assertResponseStatusCode(404)
             ->test();
 
         // Cleanup
         $this->deleteCategory($categoryId);
         $this->deleteTag($tagId);
-        HttpRequestTester::delete('/pet/' . $petId)
-            ->assertResponseStatusCode(200)
-            ->test();
     }
 
-    public function test_CreateValidPetThatAlreadyExists_ShouldReturn_200(): void
+    public function test_ExistingPetAndValidUpdateData_ShouldReturn_200(): void
     {
+        // Prepare
         $categoryId = 1;
         $tagId = 1;
         $petId = 1;
@@ -141,16 +153,22 @@ final class ActionCreateTest extends ATest
         $pet->id = $petId;
         $pet->name = 'Dog 1';
         $pet->status = 'available';
-        $pet->category = $this->createCategory(1, 'Dogs');
+        $pet->category = $this->createCategory($categoryId, 'Dogs');
         $pet->tags = [$this->createTag(1, 'Black')];
-
-        $requestTester = HttpRequestTester::post('/pet')
+        HttpRequestTester::post('/pet')
             ->json($pet)
             ->assertResponseStatusCode(200)
-            ->assertResponseJsonData(Pet::class, $pet);
+            ->assertResponseJsonData(Pet::class, $pet)
+            ->test();
 
-        $requestTester->test();
-        $requestTester->test();
+        // Test
+        $pet->name = 'Dog 2';
+        $pet->status = 'not-available';
+        HttpRequestTester::put('/pet')
+            ->json($pet)
+            ->assertResponseStatusCode(200)
+            ->assertResponseJsonData(Pet::class, $pet)
+            ->test();
 
         // Cleanup
         $this->deleteCategory($categoryId);
