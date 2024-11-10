@@ -3,6 +3,7 @@
 namespace PetStore\Tests;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 use PHPUnit\Framework\AssertionFailedError;
@@ -121,6 +122,19 @@ final class HttpRequestTester
     }
 
     /**
+     * Sets the cookie needed to trigger the XDebugger in PHPStorm.
+     *
+     * @return self
+     */
+    public function useXdebug(): self
+    {
+        $cookieJar = CookieJar::fromArray(['XDEBUG_SESSION' => 'PHPSTORM'], 'nginx');
+        $this->options['cookies'] = $cookieJar;
+
+        return $this;
+    }
+
+    /**
      * Sets an assertion on the HTTP Response code.
      *
      * @param int $statusCode
@@ -149,6 +163,8 @@ final class HttpRequestTester
         $response = null;
         try
         {
+
+
             $response = $this->client->request($this->method, $endpoint, $this->options);
         }
         catch(RequestException $e)
