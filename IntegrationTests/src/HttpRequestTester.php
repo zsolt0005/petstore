@@ -6,6 +6,10 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
+use JsonMapper;
+use JsonMapper_Exception;
+use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
@@ -36,6 +40,9 @@ final class HttpRequestTester
 
     /** @var string Key for response code assertion. */
     private const string ASSERT_STATUS_CODE = 'assert_status_code';
+
+    /** @var string Key for response data assertion. */
+    private const string ASSERT_RESPONSE_JSON = 'assert_response_json';
 
     /** @var Client Guzzle client. */
     private Client $client;
@@ -149,6 +156,21 @@ final class HttpRequestTester
     }
 
     /**
+     * Sets an assertion on the HTTP Response data and its type.
+     *
+     * @param class-string $type
+     * @param mixed        $data
+     *
+     * @return self
+     */
+    public function assertResponseJsonData(string $type, mixed $data): self
+    {
+        $this->asserts[self::ASSERT_RESPONSE_JSON] = [$type, $data];
+
+        return $this;
+    }
+
+    /**
      * Sends the request and runs the assertions.
      *
      * @return void
@@ -184,6 +206,33 @@ final class HttpRequestTester
         if(isset($this->asserts[self::ASSERT_STATUS_CODE]))
         {
             TestCase::assertSame($this->asserts[self::ASSERT_STATUS_CODE], $response->getStatusCode(), $this->method . ' ' . $endpoint);
+        }
+
+        if(!empty($this->asserts[self::ASSERT_RESPONSE_JSON]) && is_array($this->asserts[self::ASSERT_RESPONSE_JSON]))
+        {
+            /** @var class-string $expectedType */
+            [$expectedType, $expectedData] = @$this->asserts[self::ASSERT_RESPONSE_JSON];
+
+            $mapper = new JsonMapper();
+            $mapper->undefinedPropertyHandler = static fn() => throw new JsonMapper_Exception();
+
+            try
+            {
+                /** @var object $parsedBody */
+                $parsedBody = Json::decode($response->getBody()->getContents(), false);
+                $parsedResponse = $mapper->map($parsedBody, $expectedType);
+            }
+            catch (JsonMapper_Exception | JsonException $e)
+            {
+                TestCase::fail(
+                    'Failed to decode response data to ' . $expectedType . '. Response: ' . $response->getBody()->getContents() . ' :: ' . $e->getMessage()
+                );
+            }
+
+            if($expectedData !== null)
+            {
+                TestCase::assertEquals($expectedData, $parsedResponse);
+            }
         }
     }
 }
