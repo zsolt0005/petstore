@@ -14,6 +14,7 @@ use PetStore\Enums\CreatePetErrorResult;
 use PetStore\Enums\FindPetByStatusErrorResult;
 use PetStore\Enums\GetPetByIdErrorResult;
 use PetStore\Enums\UpdatePetErrorResult;
+use PetStore\Repositories\ITagRepository;
 use Throwable;
 use Tracy\Debugger;
 
@@ -31,11 +32,13 @@ final readonly class PetService
      *
      * @param IPetRepository $repository
      * @param ICategoryRepository $categoryRepository
+     * @param ITagRepository $tagRepository
      * @param PathProvider $pathProvider
      */
     public function __construct(
         private IPetRepository $repository,
         private ICategoryRepository $categoryRepository,
+        private ITagRepository $tagRepository,
         private PathProvider $pathProvider,
     )
     {
@@ -59,6 +62,14 @@ final readonly class PetService
         if(!$this->categoryRepository->exists($data->category->id))
         {
             return Result::of(failure: CreatePetErrorResult::CATEGORY_NOT_FOUND);
+        }
+
+        foreach ($data->tags as $tag)
+        {
+            if(!$this->tagRepository->exists($tag->id))
+            {
+                return Result::of(failure: CreatePetErrorResult::TAG_NOT_FOUND);
+            }
         }
 
         $petCreated = $this->repository->create($data);
@@ -93,6 +104,14 @@ final readonly class PetService
         if(!$this->categoryRepository->exists($data->category->id))
         {
             return Result::of(failure: UpdatePetErrorResult::CATEGORY_NOT_FOUND);
+        }
+
+        foreach ($data->tags as $tag)
+        {
+            if(!$this->tagRepository->exists($tag->id))
+            {
+                return Result::of(failure: UpdatePetErrorResult::TAG_NOT_FOUND);
+            }
         }
 
         $petUpdated = $this->repository->update($data);
