@@ -109,7 +109,6 @@ final class PetPresenter extends Presenter
                 success: fn(Pet $pet) => $this->sendResponse(ResponseUtils::mapDataToResponse($httpRequest, $pet)),
                 failure: fn(UpdatePetErrorResult $errorResult) => match ($errorResult)
                 {
-                    UpdatePetErrorResult::INVALID_ID => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest)),
                     UpdatePetErrorResult::PET_NOT_FOUND => $this->sendResponse(new JsonResponse(null, IResponse::S404_NotFound)),
                     default => $this->sendResponse(new JsonResponse(null, IResponse::S405_MethodNotAllowed))
                 }
