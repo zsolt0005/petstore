@@ -14,6 +14,14 @@ final class ExampleTest extends TestCase
 {
     public function testExample(): void
     {
+        HttpRequestTester::get('/')
+            ->assertResponseStatusCode(200)
+            ->test();
+
+        HttpRequestTester::get('api/v1/pet/1')
+            ->assertResponseStatusCode(200)
+            ->test();
+
         self::assertTrue(true);
     }
 }

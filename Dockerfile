@@ -8,6 +8,7 @@ RUN apt-get install -y libpng-dev
 RUN apt-get install -y libjpeg-dev
 RUN apt-get install -y libjpeg62-turbo-dev
 RUN apt-get install -y libfreetype6-dev
+RUN apt-get install -y zip unzip
 
 RUN pecl install xdebug-3.3.2 \
  && docker-php-ext-enable xdebug
