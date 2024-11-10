@@ -64,7 +64,7 @@ abstract class ATest extends TestCase
      */
     protected function deleteTag(int $id): void
     {
-        HttpRequestTester::post('/tag/' . $id)
+        HttpRequestTester::delete('/tag/' . $id)
             ->assertResponseStatusCode(200)
             ->test();
     }
@@ -78,7 +78,7 @@ abstract class ATest extends TestCase
      */
     protected function deleteCategory(int $id): void
     {
-        HttpRequestTester::post('/category/' . $id)
+        HttpRequestTester::delete('/category/' . $id)
             ->assertResponseStatusCode(200)
             ->test();
 

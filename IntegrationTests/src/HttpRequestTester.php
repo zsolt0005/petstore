@@ -167,7 +167,7 @@ final class HttpRequestTester
 
         if(isset($this->asserts[self::ASSERT_STATUS_CODE]))
         {
-            TestCase::assertSame($this->asserts[self::ASSERT_STATUS_CODE], $response->getStatusCode(), $endpoint);
+            TestCase::assertSame($this->asserts[self::ASSERT_STATUS_CODE], $response->getStatusCode(), $this->method . ' ' . $endpoint);
         }
     }
 }
