@@ -30,7 +30,8 @@ COPY  PetStore/config ./config
 COPY  PetStore/www ./www
 
 RUN mkdir ./log
-RUN chmod a+w ./log
+RUN chmod 777 -R /var/www/html/log
+RUN chmod 777 -R /var/www/html/www
 
 RUN composer dump-autoload --optimize
 
