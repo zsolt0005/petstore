@@ -11,14 +11,26 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Throwable;
 
+/**
+ * Class HttpRequestTester
+ *
+ * @package PetStore\Tests
+ * @author  Zsolt Döme
+ * @since   2024
+ */
 final class HttpRequestTester
 {
     /** @var string Base URL. */
     private const string BASE_URL = 'http://nginx';
 
+    /** @var string Base API PATH. */
+    private const string BASE_API_PATH = '/api/v1';
+
     /** @var string HTTP request method. */
     private const string
         POST = 'POST',
+        PUT = 'PUT',
+        DELETE = 'DELETE',
         GET = 'GET';
 
     /** @var string Key for response code assertion. */
@@ -39,7 +51,7 @@ final class HttpRequestTester
      * @param string $method
      * @param string $endpoint
      */
-    private function __construct(private string $method, private string $endpoint)
+    private function __construct(private readonly string $method, private readonly string $endpoint)
     {
         $this->client = new Client([
             'base_uri' => self::BASE_URL,
@@ -47,7 +59,7 @@ final class HttpRequestTester
     }
 
     /**
-     * Setst the request method to: POST.
+     * Sets the request method to: POST.
      *
      * @param string $endpoint
      *
@@ -59,7 +71,31 @@ final class HttpRequestTester
     }
 
     /**
-     * Setst the request method to: GET.
+     * Sets the request method to: PUT.
+     *
+     * @param string $endpoint
+     *
+     * @return self
+     */
+    public static function put(string $endpoint): self
+    {
+        return new self(self::PUT, $endpoint);
+    }
+
+    /**
+     * Sets the request method to: DELETE.
+     *
+     * @param string $endpoint
+     *
+     * @return self
+     */
+    public static function delete(string $endpoint): self
+    {
+        return new self(self::DELETE, $endpoint);
+    }
+
+    /**
+     * Sets the request method to: GET.
      *
      * @param string $endpoint
      *
@@ -108,11 +144,12 @@ final class HttpRequestTester
      */
     public function test(): void
     {
-        $response = null;
+        $endpoint = self::BASE_API_PATH . (str_starts_with($this->endpoint, '/') ? '' : '/') . $this->endpoint;
 
+        $response = null;
         try
         {
-            $response = $this->client->request($this->method, $this->endpoint, $this->options);
+            $response = $this->client->request($this->method, $endpoint, $this->options);
         }
         catch(RequestException $e)
         {
@@ -130,7 +167,7 @@ final class HttpRequestTester
 
         if(isset($this->asserts[self::ASSERT_STATUS_CODE]))
         {
-            TestCase::assertSame($this->asserts[self::ASSERT_STATUS_CODE], $response->getStatusCode(), $this->endpoint);
+            TestCase::assertSame($this->asserts[self::ASSERT_STATUS_CODE], $response->getStatusCode(), $endpoint);
         }
     }
 }
