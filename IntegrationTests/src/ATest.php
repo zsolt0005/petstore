@@ -25,9 +25,7 @@ abstract class ATest extends TestCase
      */
     protected function createTag(int $id, string $name): Tag
     {
-        $tag = new Tag();
-        $tag->id = $id;
-        $tag->name = $name;
+        $tag = $this->prepareTagData($id, $name);
 
         HttpRequestTester::post('/tag')
             ->json($tag)
@@ -47,9 +45,7 @@ abstract class ATest extends TestCase
      */
     protected function createCategory(int $id, string $name): Category
     {
-        $category = new Category();
-        $category->id = $id;
-        $category->name = $name;
+        $category = $this->prepareCategoryData($id, $name);
 
         HttpRequestTester::post('/category')
             ->json($category)
@@ -86,5 +82,37 @@ abstract class ATest extends TestCase
             ->assertResponseStatusCode(200)
             ->test();
 
+    }
+
+    /**
+     * Prepares a category data.
+     *
+     * @param int $id
+     * @param string $name
+     *
+     * @return Category
+     */
+    protected function prepareCategoryData(int $id, string $name): Category
+    {
+        $category = new Category();
+        $category->id = $id;
+        $category->name = $name;
+        return $category;
+    }
+
+    /**
+     * Prepares a tag data.
+     *
+     * @param int $id
+     * @param string $name
+     *
+     * @return Tag
+     */
+    protected function prepareTagData(int $id, string $name): Tag
+    {
+        $tag = new Tag();
+        $tag->id = $id;
+        $tag->name = $name;
+        return $tag;
     }
 }
