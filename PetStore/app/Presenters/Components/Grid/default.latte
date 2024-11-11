@@ -1,0 +1,25 @@
+{varType PetStore\Presenters\Components\Grid\data\GridData $data}
+
+<table class="table table-hover table-striped">
+    {if !empty($data->headerColumns)}
+        <thead>
+            <tr>
+                {foreach $data->headerColumns as $header}
+                    <th>{$header}</th>
+                {/foreach}
+            </tr>
+        </thead>
+    {/if}
+
+    {if !empty($data->rows)}
+        <tbody>
+            {foreach $data->rows as $row}
+                <tr>
+                    {foreach $row->columns as $column}
+                        <td>{$column->text}</td>
+                    {/foreach}
+                </tr>
+            {/foreach}
+        </tbody>
+    {/if}
+</table>
