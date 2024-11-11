@@ -18,7 +18,7 @@ final class RequestException extends Exception
      *
      * @param int $httpStatusCode
      */
-    public function __construct(int $httpStatusCode)
+    public function __construct(public readonly int $httpStatusCode)
     {
         parent::__construct('Request failed with status ' . $httpStatusCode, $httpStatusCode, null);
     }
