@@ -33,8 +33,6 @@ TODO
 
 
 # TODO
-- Import material design
-- Basic default template design
 - Views
   - Overview
     - Tabulka kde sú všetky pets
