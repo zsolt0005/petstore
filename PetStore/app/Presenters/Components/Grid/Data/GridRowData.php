@@ -11,5 +11,6 @@ namespace PetStore\Presenters\Components\Grid\Data;
  */
 final class GridRowData
 {
+    /** @var GridColumnData[] Columns. */
     public array $columns;
 }
