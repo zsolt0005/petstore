@@ -116,7 +116,7 @@ final class ActionCreateTest extends ATest
         $pet->name = 'Dog 1';
         $pet->status = 'available';
         $pet->category = $this->createCategory($categoryId, 'Dogs');
-        $pet->tags = [$this->createTag(1, 'Black')];
+        $pet->tags = [$this->createTag($tagId, 'Black')];
 
         HttpRequestTester::post('/pet')
             ->json($pet)
