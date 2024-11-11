@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<title>{ifset title}{include title|stripHtml} | {/ifset}PetStore</title>
+
+	<link rel="stylesheet" href="{$basePath}/css/bootstrap/bootstrap.min.css">
+</head>
+
+<body data-bs-theme="dark">
+
+	<div class="container mt-4">
+		<div n:foreach="$flashes as $flash" class="alert alert-{$flash->type}" role="alert">
+			{$flash->message}
+		</div>
+
+		{include content}
+	</div>
+
+	<script type="text/javascript" src="{$basePath}/js/bootstrap/bootstrap.bundle.min.js"></script>
+	<script src="https://unpkg.com/nette-forms@3"></script>
+
+	{block scripts}{/block}
+</body>
+</html>
