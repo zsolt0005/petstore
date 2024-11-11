@@ -11,7 +11,7 @@ use PetStore\Tests\Data\Pet;
  * @author  Zsolt Döme
  * @since   2024
  */
-final class ActionFindByStatusTest extends ATest
+final class ActionFindByStatusTest extends TestsBase
 {
     public function test_StatusNotSupplied_ShouldReturn_400(): void
     {

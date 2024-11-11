@@ -18,7 +18,7 @@
 	"scripts":
 	{
 		"phpstan": "vendor/bin/phpstan analyse -c phpstan.neon src/",
-		"run-integration-tests": "vendor/bin/phpunit src"
+		"run-integration-tests": "vendor/bin/phpunit src --colors --testdox"
 	},
 	"config": {
 		"allow-plugins": {

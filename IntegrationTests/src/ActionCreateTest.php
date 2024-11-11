@@ -11,7 +11,7 @@ use PetStore\Tests\Data\Pet;
  * @author  Zsolt Döme
  * @since   2024
  */
-final class ActionCreateTest extends ATest
+final class ActionCreateTest extends TestsBase
 {
     /**
      * @return array<string, array<int, mixed>>

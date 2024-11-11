@@ -12,7 +12,7 @@ use PetStore\Tests\Data\Pet;
  * @author  Zsolt Döme
  * @since   2024
  */
-final class ActionUploadImageTest extends ATest
+final class ActionUploadImageTest extends TestsBase
 {
     public function test_NoFilesUploaded_ShouldReturn_400(): void
     {

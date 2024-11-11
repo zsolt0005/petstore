@@ -11,7 +11,7 @@ use PetStore\Tests\Data\Pet;
  * @author  Zsolt Döme
  * @since   2024
  */
-final class ActionDeleteByIdTest extends ATest
+final class ActionDeleteByIdTest extends TestsBase
 {
     public function test_NonExistingPet_ShouldReturn_200(): void
     {

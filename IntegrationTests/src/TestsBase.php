@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  * @author  Zsolt Döme
  * @since   2024
  */
-abstract class ATest extends TestCase
+abstract class TestsBase extends TestCase
 {
     /**
      * Creates a new tag and asserts 200 response.

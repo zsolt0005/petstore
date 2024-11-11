@@ -11,7 +11,7 @@ use PetStore\Tests\Data\Pet;
  * @author  Zsolt Döme
  * @since   2024
  */
-final class ActionPartialUpdateTest extends ATest
+final class ActionPartialUpdateTest extends TestsBase
 {
     public function test_NonExistingPet_ShouldReturn_404(): void
     {
