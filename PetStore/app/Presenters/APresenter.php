@@ -2,7 +2,9 @@
 
 namespace PetStore\Presenters;
 
+use Exception;
 use Nette\Application\UI\Presenter;
+use Nette\ComponentModel\IComponent;
 
 /**
  * Class APresenter
@@ -47,5 +49,27 @@ abstract class APresenter extends Presenter
     protected function flashMessageError(string $message): void
     {
         $this->flashMessage($message, 'danger');
+    }
+
+    /**
+     *
+     * @template T of IComponent
+     *
+     * @param string $name
+     * @param class-string<T> $type
+     *
+     * @return T
+     */
+    protected function getTypedComponent(string $name, string $type): ?IComponent
+    {
+        try
+        {
+            $component = $this->getComponent($name);
+            return get_class($component) === $type ? $component : null;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 }
