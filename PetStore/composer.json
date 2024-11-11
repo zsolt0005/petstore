@@ -17,7 +17,8 @@
 		"netresearch/jsonmapper": "^5.0.0",
 		"symfony/serializer": "^7.1.6",
 		"symfony/property-access": "^7.1.6",
-		"phpdocumentor/reflection-docblock": "^5.5.1"
+		"phpdocumentor/reflection-docblock": "^5.5.1",
+		"guzzlehttp/guzzle": "^7.9.2"
 	},
 	"require-dev": {
 		"phpstan/phpstan": "^1.12.8"
