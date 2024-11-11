@@ -29,3 +29,25 @@ Spustíme script `run-integration-tests.ps1` ktorý spustí web server, vykoná 
 
 # Rozšírenie Pet o ďalší stĺpec
 TODO
+
+
+
+# TODO
+- Import material design
+- Basic default template design
+- Views
+  - Overview
+    - Tabulka kde sú všetky pets
+      - Fitre
+        - ByIdFilter
+        - ByStatusFilter
+        - ByTagsFilter
+      - Actions
+        - Update
+          - Formular so všetkými data
+        - Quick Update
+          - Formulár s name a status
+        - Delete
+          - Quick action ktorý odmaže zvieratko
+  - Add pet
+    - Formulár so všetkými data
