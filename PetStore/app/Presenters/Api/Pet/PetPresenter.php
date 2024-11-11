@@ -164,15 +164,14 @@ final class PetPresenter extends Presenter
     /**
      * Finds all the pets with the given status.
      *
-     * @param string $status
-     *
      * @return never
      * @throws Exception
      */
-    public function actionFindByStatus(string $status): never
+    public function actionFindByStatus(): never
     {
         $request = $this->getHttpRequest();
 
+        $status = TypeUtils::convertToString($this->getRequest()?->getParameter('status')) ?? '';
         $result = $this->service->findByStatus($status);
 
         $this->sendResponse(

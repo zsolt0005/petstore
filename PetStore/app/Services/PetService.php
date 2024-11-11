@@ -211,7 +211,7 @@ final readonly class PetService
     {
         if(empty($status))
         {
-            Result::of(failure: FindPetByStatusErrorResult::INVALID_STATUS);
+            return Result::of(failure: FindPetByStatusErrorResult::INVALID_STATUS);
         }
 
         return Result::of(success: $this->repository->findByStatus($status));
