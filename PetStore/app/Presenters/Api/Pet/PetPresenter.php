@@ -195,8 +195,8 @@ final class PetPresenter extends Presenter
     {
         $request = $this->getHttpRequest();
 
-        $tags = TypeUtils::convertToString($this->getRequest()?->getParameter('tags'));
-        if($tags === null)
+        $tags = TypeUtils::convertToString($this->getRequest()?->getParameter('tags')) ?? '';
+        if(empty($tags))
         {
             $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest));
         }
