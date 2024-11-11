@@ -12,7 +12,7 @@ use PetStore\Presenters\Components\Grid\Data\GridRowData;
  * @author  Zsolt Döme
  * @since   2024
  */
-final readonly class GridDataBuilder
+final class GridDataBuilder
 {
     /** @var GridData Data to be built. */
     private GridData $data;
@@ -33,6 +33,21 @@ final readonly class GridDataBuilder
     public static function create(): GridDataBuilder
     {
         return new self();
+    }
+
+    /**
+     * Creates a new instance with the data supplied as base.
+     *
+     * @param GridData $data
+     *
+     * @return GridDataBuilder
+     */
+    public static function from(GridData $data): GridDataBuilder
+    {
+        $builder = new self();
+        $builder->data = $data;
+
+        return $builder;
     }
 
     /**
@@ -60,6 +75,17 @@ final readonly class GridDataBuilder
 
         $this->data->rows[] = $rowData;
         return GridRowDataBuilder::create($this, $rowData);
+    }
+
+    /**
+     * Clears all the rows.
+     *
+     * @return self
+     */
+    public function clearRows(): self
+    {
+        $this->data->rows = [];
+        return $this;
     }
 
     /**
