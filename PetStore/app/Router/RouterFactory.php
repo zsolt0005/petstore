@@ -21,6 +21,7 @@ final class RouterFactory
         # [API] Pets
         $router->add(new ApiRoute('/api/v1/pet', 'Api:Pet', [
             'methods' => [
+                'GET' => 'getAll',
                 'POST' => 'create',
                 'PUT' => 'update'
             ]
