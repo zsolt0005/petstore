@@ -233,8 +233,6 @@ final class HttpRequestTester
         $response = null;
         try
         {
-
-
             $response = $this->client->request($this->method, $endpoint, $this->options);
         }
         catch(RequestException $e)
