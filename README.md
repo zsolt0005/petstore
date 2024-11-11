@@ -13,9 +13,9 @@ PetStore
 - Web server funguje iba na porte 80 z dôvodu aby som nemusel generovať a inštalovať certifikáty pre tak malý projekt, postačí dúfam aj http :)
 
 # Vývoj
-Pre vývojs tačí v **root folder** spustiť command `docker compose up -d --build`
+Pre vývoj stačí v **root folder** spustiť command `docker compose up -d --build`
 
-Následne je na adrese `127.0.0.1:80` web server prístupný
+Následne je na adrese `127.0.0.1:80` web server prístupný (Všetky zmeny v aplikácie sa bez resetu containeru prejavia hneď)
 
 # Integration tests
 
