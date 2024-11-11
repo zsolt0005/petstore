@@ -206,6 +206,19 @@ final class PetPresenter extends Presenter
     }
 
     /**
+     * Gets all pets.
+     *
+     * @return never
+     * @throws Exception
+     */
+    public function actionGetAll(): never
+    {
+        $request = $this->getHttpRequest();
+        $pets = $this->service->getAll();
+        $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pets));
+    }
+
+    /**
      * Uploads an image for a Pet.
      *
      * @param int $id

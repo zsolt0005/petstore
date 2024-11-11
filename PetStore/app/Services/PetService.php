@@ -232,6 +232,16 @@ final readonly class PetService
     }
 
     /**
+     * Gets all the pets.
+     *
+     * @return Pet[]
+     */
+    public function getAll(): array
+    {
+        return $this->repository->getAll();
+    }
+
+    /**
      * Uploads images for the given Pet.
      *
      * @param int $id

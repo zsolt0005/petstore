@@ -66,4 +66,11 @@ interface IPetRepository
      * @return Pet[]
      */
     public function findByTags(array $tags): array;
+
+    /**
+     * Gets all the pets.
+     *
+     * @return Pet[]
+     */
+    public function getAll(): array;
 }
