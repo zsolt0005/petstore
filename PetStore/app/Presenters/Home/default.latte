@@ -1,3 +1,13 @@
+{varType PetStore\Presenters\Components\Grid\data\GridData $data}
+
 {block content}
 
-<h1>Hello world</h1>
+<div n:snippet="PetStore\Presenters\Home\HomePresenter::SNIPPET_GRID">
+    {control grid}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        ajax.fetch({link loadAllPets!}).then( result => ajax.processPayload(result) )
+    });
+</script>

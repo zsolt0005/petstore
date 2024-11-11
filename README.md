@@ -40,7 +40,6 @@ TODO
 # TODO
 - Views
   - Overview
-    - Tabulka kde sú všetky pets
       - Fitre
         - ByIdFilter
         - ByStatusFilter
