@@ -83,9 +83,7 @@ class NetteAjax {
 	}
 
 	showIndicator(x, y) {
-		let styles = (x !== undefined && y !== undefined)
-			? {display: 'block', position: 'absolute', left: x + 'px', top: y + 'px'}
-			: {display: 'block', position: 'fixed', left: '50%', top: '50%'};
+		let styles = {display: 'block', position: 'fixed', left: '50%', top: '50%'};
 		Object.assign(this.#indicator.style, styles);
 	}
 
@@ -97,6 +95,13 @@ class NetteAjax {
 		this.#indicator = document.createElement('div');
 		this.#indicator.id = this.indicatorId;
 		this.#indicator.style.display = 'none';
+
+		this.#indicator.innerHTML += `
+			<div class="spinner-border text-primary" role="status">
+			  <span class="visually-hidden">Loading...</span>
+			</div>
+		`
+
 		document.body.appendChild(this.#indicator);
 	}
 }
