@@ -3,7 +3,6 @@
 namespace PetStore\Presenters\Components\Grid;
 
 use Nette\Application\UI\Control;
-use PetStore\Presenters\Components\Grid\Builders\GridDataBuilder;
 use PetStore\Presenters\Components\Grid\Data\GridData;
 
 /**
@@ -16,46 +15,16 @@ use PetStore\Presenters\Components\Grid\Data\GridData;
 final class Grid extends Control
 {
     /**
-     * Constructor.
+     * Renders the component.
      *
      * @param GridData $data
-     */
-    public function __construct(private GridData $data)
-    {
-    }
-
-    /**
-     * Renders the component.
      *
      * @return void
      */
-    public function render(): void
+    public function render(GridData $data): void
     {
         $template = $this->getTemplate()->setFile(__DIR__ . '/default.latte');
-        $template->data = $this->data; // @phpstan-ignore-line
+        $template->data = $data; // @phpstan-ignore-line
         $template->render();
-    }
-
-    /**
-     * Sets the component data.
-     *
-     * @param GridData $data
-     *
-     * @return self
-     */
-    public function setData(GridData $data): self
-    {
-        $this->data = $data;
-        return $this;
-    }
-
-    /**
-     * Gets the component data builder.
-     *
-     * @return GridDataBuilder
-     */
-    public function getDataBuilder(): GridDataBuilder
-    {
-        return GridDataBuilder::from($this->data);
     }
 }
