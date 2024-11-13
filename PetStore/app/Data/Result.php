@@ -11,16 +11,16 @@ use InvalidArgumentException;
  * @author  Zsolt Döme
  * @since   2024
  *
- * @template R of object|null
- * @template T of mixed
+ * @template E of object|null
+ * @template S of mixed
  */
 final class Result
 {
     /**
      * Constructor.
      *
-     * @param R $failure
-     * @param T $success
+     * @param E $failure
+     * @param S $success
      */
     public function __construct(private ?object $failure, private mixed $success)
     {
@@ -29,13 +29,13 @@ final class Result
     /**
      * Creates a new isntance of {@see self}.
      *
-     * @template R1 of object|null
-     * @template T1 of mixed
+     * @template E1 of object|null
+     * @template S1 of mixed
      *
-     * @param R1 $failure
-     * @param T1 $success
+     * @param E1 $failure
+     * @param S1 $success
      *
-     * @return Result<R1, T1>
+     * @return Result<E1, S1>
      */
     public static function of(?object $failure = null, mixed $success = null): Result
     {
@@ -47,8 +47,8 @@ final class Result
      *
      * @template C
      *
-     * @param callable(T): C $success
-     * @param callable(R): C $failure
+     * @param callable(S): C $success
+     * @param callable(E): C $failure
      *
      * @return C
      *
