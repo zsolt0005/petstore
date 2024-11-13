@@ -68,4 +68,22 @@ final class Result
 
         throw new InvalidArgumentException('Both success and failure are empty');
     }
+
+    /**
+     * Match the result.
+     *
+     * @template C
+     *
+     * @param callable(S|null): void $success
+     * @param callable(E|null): void $failure
+     *
+     * @return C
+     *
+     * @throws InvalidArgumentException
+     */
+    public function matchAll(callable $success, callable $failure): void
+    {
+        $success($this->success);
+        $failure($this->failure);
+    }
 }

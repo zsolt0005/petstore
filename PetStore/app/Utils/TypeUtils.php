@@ -44,4 +44,31 @@ final class TypeUtils
 
         return null;
     }
+
+    /**
+     * Converts input to int.
+     *
+     * @param mixed $input
+     *
+     * @return int|null
+     */
+    public static function convertToInt(mixed $input): ?int
+    {
+        if($input === null)
+        {
+            return null;
+        }
+
+        if(is_int($input))
+        {
+            return $input;
+        }
+
+        if(is_numeric($input))
+        {
+            return (int) $input;
+        }
+
+        return null;
+    }
 }
