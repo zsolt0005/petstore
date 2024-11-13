@@ -1,6 +1,6 @@
 {varType PetStore\Presenters\Components\Grid\data\GridData $data}
 
-<table class="table table-hover table-striped">
+<table class="table table-sm table-hover table-striped">
     {if !empty($data->headerColumns)}
         <thead>
             <tr>
@@ -16,7 +16,23 @@
             {foreach $data->rows as $row}
                 <tr>
                     {foreach $row->columns as $column}
-                        <td>{$column->text}</td>
+                        {var $widthAdjustment = $column instanceof PetStore\Presenters\Components\Grid\Data\GridActionsColumnData}
+                        <td style="{$widthAdjustment ? 'width: 1px' : '' |noescape}">
+                            {if $column instanceof PetStore\Presenters\Components\Grid\Data\GridColumnData}
+                                {varType PetStore\Presenters\Components\Grid\Data\GridColumnData $column}
+                                {$column->text}
+                            {elseif $column instanceof PetStore\Presenters\Components\Grid\Data\GridActionsColumnData}
+                                {varType PetStore\Presenters\Components\Grid\Data\GridActionsColumnData $column}
+
+                                <div class="d-flex flex-row">
+                                    {foreach $column->actions as $action}
+                                        <a href="{$action->url}" class="col-auto me-2 btn btn-sm {$action->styles}" title="{$action->title}">
+                                            <span class="material-icons">{$action->icon}</span>
+                                        </a>
+                                    {/foreach}
+                                </div>
+                            {/if}
+                        </td>
                     {/foreach}
                 </tr>
             {/foreach}

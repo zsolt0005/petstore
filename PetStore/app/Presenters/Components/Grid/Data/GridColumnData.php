@@ -9,7 +9,7 @@ namespace PetStore\Presenters\Components\Grid\Data;
  * @author  Zsolt Döme
  * @since   2024
  */
-final readonly class GridColumnData
+final readonly class GridColumnData implements IColumnData
 {
     /**
      * Constructor.

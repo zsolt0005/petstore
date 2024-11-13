@@ -2,6 +2,8 @@
 
 namespace PetStore\Presenters\Components\Grid\Builders;
 
+use PetStore\Presenters\Components\Grid\Data\GridActionsColumnData;
+use PetStore\Presenters\Components\Grid\Data\GridColumnActionData;
 use PetStore\Presenters\Components\Grid\Data\GridColumnData;
 use PetStore\Presenters\Components\Grid\Data\GridData;
 use PetStore\Presenters\Components\Grid\Data\GridRowData;
@@ -48,6 +50,20 @@ final readonly class GridRowDataBuilder
     public function addColumn(string $text): self
     {
         $this->data->columns[] = GridColumnData::create($text);
+
+        return $this;
+    }
+
+    /**
+     * Adds a new actions column to the row.
+     *
+     * @param GridColumnActionData[] $actions
+     *
+     * @return self
+     */
+    public function addActionsColumn(array $actions): self
+    {
+        $this->data->columns[] = GridActionsColumnData::create($actions);
 
         return $this;
     }
