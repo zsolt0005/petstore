@@ -72,14 +72,10 @@ final class Result
     /**
      * Match the result.
      *
-     * @template C
-     *
      * @param callable(S|null): void $success
      * @param callable(E|null): void $failure
      *
-     * @return C
-     *
-     * @throws InvalidArgumentException
+     * @return void
      */
     public function matchAll(callable $success, callable $failure): void
     {
