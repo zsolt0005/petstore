@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9e848463c129d54ae0714668ac3338e0",
+    "content-hash": "6b3017511a9931b7072421c97e611252",
     "packages": [
         {
             "name": "contributte/api-router",
@@ -1850,12 +1850,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "0c70d2c566e899666f367ab7b80986beb3581e6f"
+                "reference": "f3558a4c23426d12bffeaab463f8a8d8b681193c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/0c70d2c566e899666f367ab7b80986beb3581e6f",
-                "reference": "0c70d2c566e899666f367ab7b80986beb3581e6f",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/f3558a4c23426d12bffeaab463f8a8d8b681193c",
+                "reference": "f3558a4c23426d12bffeaab463f8a8d8b681193c",
                 "shasum": ""
             },
             "require": {
@@ -1864,7 +1864,7 @@
                 "php": "^7.4 || ^8.0",
                 "phpdocumentor/reflection-common": "^2.2",
                 "phpdocumentor/type-resolver": "^1.7",
-                "phpstan/phpdoc-parser": "^1.7",
+                "phpstan/phpdoc-parser": "^1.7|^2.0",
                 "webmozart/assert": "^1.9.1"
             },
             "require-dev": {
@@ -1905,9 +1905,9 @@
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
             "support": {
                 "issues": "https://github.com/phpDocumentor/ReflectionDocBlock/issues",
-                "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/5.5.1"
+                "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/5.6.0"
             },
-            "time": "2024-11-06T11:58:54+00:00"
+            "time": "2024-11-12T11:25:25+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -1970,32 +1970,33 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "1.33.0",
+            "version": "2.0.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "82a311fd3690fb2bf7b64d5c98f912b3dd746140"
+                "reference": "04c8de0d350731bccfa216a5b5e9b3e1c26e4e24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/82a311fd3690fb2bf7b64d5c98f912b3dd746140",
-                "reference": "82a311fd3690fb2bf7b64d5c98f912b3dd746140",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/04c8de0d350731bccfa216a5b5e9b3e1c26e4e24",
+                "reference": "04c8de0d350731bccfa216a5b5e9b3e1c26e4e24",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2 || ^8.0"
+                "php": "^7.4 || ^8.0"
             },
             "require-dev": {
                 "doctrine/annotations": "^2.0",
-                "nikic/php-parser": "^4.15",
+                "nikic/php-parser": "^5.3.0",
                 "php-parallel-lint/php-parallel-lint": "^1.2",
                 "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan": "^1.5",
-                "phpstan/phpstan-phpunit": "^1.1",
-                "phpstan/phpstan-strict-rules": "^1.0",
-                "phpunit/phpunit": "^9.5",
+                "phpstan/phpstan": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpstan/phpstan-strict-rules": "^2.0",
+                "phpunit/phpunit": "^9.6",
                 "symfony/process": "^5.2"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -2011,9 +2012,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.33.0"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.0.x"
             },
-            "time": "2024-10-13T11:25:22+00:00"
+            "time": "2024-11-07T10:15:44+00:00"
         },
         {
             "name": "psr/cache",
@@ -3026,18 +3027,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/property-info.git",
-                "reference": "cad7bca32405b5c57c6331e7760df34fa0be23ea"
+                "reference": "c33697d80ef5efa8aa8e6a43e36a8a22fec44d3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/property-info/zipball/cad7bca32405b5c57c6331e7760df34fa0be23ea",
-                "reference": "cad7bca32405b5c57c6331e7760df34fa0be23ea",
+                "url": "https://api.github.com/repos/symfony/property-info/zipball/c33697d80ef5efa8aa8e6a43e36a8a22fec44d3f",
+                "reference": "c33697d80ef5efa8aa8e6a43e36a8a22fec44d3f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.2",
                 "symfony/string": "^6.4|^7.0",
-                "symfony/type-info": "^7.1"
+                "symfony/type-info": "^7.2"
             },
             "conflict": {
                 "phpdocumentor/reflection-docblock": "<5.2",
@@ -3102,7 +3103,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-09T09:29:03+00:00"
+            "time": "2024-11-13T14:30:29+00:00"
         },
         {
             "name": "symfony/serializer",
@@ -3110,12 +3111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/serializer.git",
-                "reference": "fa8b444a5ad9872d042e5acbf6828a6560ea985e"
+                "reference": "2127f4a5b547f90b117da612e85caa8ba79c79b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/serializer/zipball/fa8b444a5ad9872d042e5acbf6828a6560ea985e",
-                "reference": "fa8b444a5ad9872d042e5acbf6828a6560ea985e",
+                "url": "https://api.github.com/repos/symfony/serializer/zipball/2127f4a5b547f90b117da612e85caa8ba79c79b2",
+                "reference": "2127f4a5b547f90b117da612e85caa8ba79c79b2",
                 "shasum": ""
             },
             "require": {
@@ -3129,7 +3130,7 @@
                 "symfony/dependency-injection": "<6.4",
                 "symfony/property-access": "<6.4",
                 "symfony/property-info": "<6.4",
-                "symfony/type-info": "<7.1.5",
+                "symfony/type-info": "<7.2",
                 "symfony/uid": "<6.4",
                 "symfony/validator": "<6.4",
                 "symfony/yaml": "<6.4"
@@ -3152,7 +3153,7 @@
                 "symfony/property-access": "^6.4|^7.0",
                 "symfony/property-info": "^6.4|^7.0",
                 "symfony/translation-contracts": "^2.5|^3",
-                "symfony/type-info": "^7.1.5",
+                "symfony/type-info": "^7.2",
                 "symfony/uid": "^6.4|^7.0",
                 "symfony/validator": "^6.4|^7.0",
                 "symfony/var-dumper": "^6.4|^7.0",
@@ -3201,7 +3202,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-09T09:29:03+00:00"
+            "time": "2024-11-13T14:27:59+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -3293,12 +3294,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "205580699b4d3e11f7b679faf2c0f57ffca6981c"
+                "reference": "446e0d146f991dde3e73f45f2c97a9faad773c82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/205580699b4d3e11f7b679faf2c0f57ffca6981c",
-                "reference": "205580699b4d3e11f7b679faf2c0f57ffca6981c",
+                "url": "https://api.github.com/repos/symfony/string/zipball/446e0d146f991dde3e73f45f2c97a9faad773c82",
+                "reference": "446e0d146f991dde3e73f45f2c97a9faad773c82",
                 "shasum": ""
             },
             "require": {
@@ -3372,7 +3373,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-10-23T06:56:12+00:00"
+            "time": "2024-11-13T13:31:26+00:00"
         },
         {
             "name": "symfony/type-info",
@@ -3380,12 +3381,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/type-info.git",
-                "reference": "2bdf5f7c0a60da69c3444faf206c21fa4e028921"
+                "reference": "b670adca12f4bc75d0a6489ca857a086c02db48a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/type-info/zipball/2bdf5f7c0a60da69c3444faf206c21fa4e028921",
-                "reference": "2bdf5f7c0a60da69c3444faf206c21fa4e028921",
+                "url": "https://api.github.com/repos/symfony/type-info/zipball/b670adca12f4bc75d0a6489ca857a086c02db48a",
+                "reference": "b670adca12f4bc75d0a6489ca857a086c02db48a",
                 "shasum": ""
             },
             "require": {
@@ -3395,12 +3396,14 @@
             "conflict": {
                 "phpstan/phpdoc-parser": "<1.0",
                 "symfony/dependency-injection": "<6.4",
-                "symfony/property-info": "<6.4"
+                "symfony/property-info": "<7.2",
+                "symfony/serializer": "<7.2",
+                "symfony/validator": "<7.2"
             },
             "require-dev": {
                 "phpstan/phpdoc-parser": "^1.0|^2.0",
                 "symfony/dependency-injection": "^6.4|^7.0",
-                "symfony/property-info": "^6.4|^7.0"
+                "symfony/property-info": "^7.2"
             },
             "type": "library",
             "autoload": {
@@ -3454,7 +3457,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-08T21:15:15+00:00"
+            "time": "2024-11-13T14:30:29+00:00"
         },
         {
             "name": "symfony/var-exporter",
@@ -3669,24 +3672,25 @@
     "packages-dev": [
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.x-dev",
+            "version": "2.0.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "fc463b5d0fe906dcf19689be692c65c50406a071"
+                "reference": "cc4eb9217718ba941eba0061cc515e62b94e48e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/fc463b5d0fe906dcf19689be692c65c50406a071",
-                "reference": "fc463b5d0fe906dcf19689be692c65c50406a071",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/cc4eb9217718ba941eba0061cc515e62b94e48e0",
+                "reference": "cc4eb9217718ba941eba0061cc515e62b94e48e0",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2|^8.0"
+                "php": "^7.4|^8.0"
             },
             "conflict": {
                 "phpstan/phpstan-shim": "*"
             },
+            "default-branch": true,
             "bin": [
                 "phpstan",
                 "phpstan.phar"
@@ -3723,7 +3727,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-11-11T15:37:09+00:00"
+            "time": "2024-11-13T16:32:44+00:00"
         }
     ],
     "aliases": [],
