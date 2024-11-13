@@ -52,8 +52,8 @@ final class PetPresenter extends Presenter
 
         $this->sendResponse(
             $result->match(
-               success: fn(Pet $pet) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pet)),
-               failure: fn(CreatePetErrorResult $errorResult) => $this->sendResponse(new JsonResponse(null, IResponse::S405_MethodNotAllowed))
+               success: fn(Pet $pet) => ResponseUtils::mapDataToResponse($request, $pet),
+               failure: fn(CreatePetErrorResult $errorResult) => new JsonResponse(null, IResponse::S405_MethodNotAllowed)
             )
         );
     }
@@ -75,12 +75,12 @@ final class PetPresenter extends Presenter
 
         $this->sendResponse(
             $result->match(
-                success: fn(Pet $pet) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pet)),
+                success: fn(Pet $pet) => ResponseUtils::mapDataToResponse($request, $pet),
                 failure: fn(UpdatePetErrorResult $errorResult) => match ($errorResult)
                 {
-                    UpdatePetErrorResult::INVALID_ID => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest)),
-                    UpdatePetErrorResult::PET_NOT_FOUND => $this->sendResponse(new JsonResponse(null, IResponse::S404_NotFound)),
-                    default => $this->sendResponse(new JsonResponse(null, IResponse::S405_MethodNotAllowed))
+                    UpdatePetErrorResult::INVALID_ID => new JsonResponse(null, IResponse::S400_BadRequest),
+                    UpdatePetErrorResult::PET_NOT_FOUND => new JsonResponse(null, IResponse::S404_NotFound),
+                    default => new JsonResponse(null, IResponse::S405_MethodNotAllowed)
                 }
             )
         );
@@ -106,11 +106,11 @@ final class PetPresenter extends Presenter
 
         $this->sendResponse(
             $result->match(
-                success: fn(Pet $pet) => $this->sendResponse(ResponseUtils::mapDataToResponse($httpRequest, $pet)),
+                success: fn(Pet $pet) => ResponseUtils::mapDataToResponse($httpRequest, $pet),
                 failure: fn(UpdatePetErrorResult $errorResult) => match ($errorResult)
                 {
-                    UpdatePetErrorResult::PET_NOT_FOUND => $this->sendResponse(new JsonResponse(null, IResponse::S404_NotFound)),
-                    default => $this->sendResponse(new JsonResponse(null, IResponse::S405_MethodNotAllowed))
+                    UpdatePetErrorResult::PET_NOT_FOUND => new JsonResponse(null, IResponse::S404_NotFound),
+                    default => new JsonResponse(null, IResponse::S405_MethodNotAllowed)
                 }
             )
         );
@@ -132,11 +132,11 @@ final class PetPresenter extends Presenter
 
         $this->sendResponse(
             $result->match(
-                success: fn(Pet $pet) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pet)),
+                success: fn(Pet $pet) => ResponseUtils::mapDataToResponse($request, $pet),
                 failure: fn(GetPetByIdErrorResult $errorResult) => match ($errorResult)
                 {
-                    GetPetByIdErrorResult::INVALID_ID => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest)),
-                    GetPetByIdErrorResult::PET_NOT_FOUND => $this->sendResponse(new JsonResponse(null, IResponse::S404_NotFound))
+                    GetPetByIdErrorResult::INVALID_ID => new JsonResponse(null, IResponse::S400_BadRequest),
+                    GetPetByIdErrorResult::PET_NOT_FOUND => new JsonResponse(null, IResponse::S404_NotFound)
                 }
             )
         );
@@ -176,10 +176,10 @@ final class PetPresenter extends Presenter
 
         $this->sendResponse(
             $result->match(
-                success: fn(array $pets) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pets)),
+                success: fn(array $pets) => ResponseUtils::mapDataToResponse($request, $pets),
                 failure: fn(FindPetByStatusErrorResult $errorResult) => match ($errorResult)
                 {
-                    FindPetByStatusErrorResult::INVALID_STATUS => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest))
+                    FindPetByStatusErrorResult::INVALID_STATUS => new JsonResponse(null, IResponse::S400_BadRequest)
                 }
             )
         );

@@ -48,8 +48,8 @@ final class CategoryPresenter extends Presenter
 
         $this->sendResponse(
             $result->match(
-                success: fn(Category $pet) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pet)),
-                failure: fn(CreateCategoryErrorResult $errorResult) => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest))
+                success: fn(Category $pet) => ResponseUtils::mapDataToResponse($request, $pet),
+                failure: fn(CreateCategoryErrorResult $errorResult) => new JsonResponse(null, IResponse::S400_BadRequest)
             )
         );
     }

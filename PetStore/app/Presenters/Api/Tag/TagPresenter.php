@@ -48,8 +48,8 @@ final class TagPresenter extends Presenter
 
         $this->sendResponse(
             $result->match(
-                success: fn(Tag $pet) => $this->sendResponse(ResponseUtils::mapDataToResponse($request, $pet)),
-                failure: fn(CreateTagErrorResult $errorResult) => $this->sendResponse(new JsonResponse(null, IResponse::S400_BadRequest))
+                success: fn(Tag $pet) => ResponseUtils::mapDataToResponse($request, $pet),
+                failure: fn(CreateTagErrorResult $errorResult) => new JsonResponse(null, IResponse::S400_BadRequest)
             )
         );
     }
