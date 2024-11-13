@@ -2,18 +2,14 @@
 
 namespace PetStore\Presenters\Home;
 
-use InvalidArgumentException;
-use Nette\Http\IResponse;
 use PetStore\Data\HomeFilterData;
 use PetStore\Enums\HomeActionDefaultErrorResult;
 use PetStore\Presenters\APresenter;
 use PetStore\Presenters\Components\Grid\Data\GridData;
 use PetStore\Presenters\Components\Grid\Grid;
-use PetStore\SDK\Exceptions\RequestException;
 use PetStore\Services\HomeService;
+use PetStore\Services\PetService;
 use PetStore\Utils\TypeUtils;
-use Tracy\Debugger;
-use Tracy\ILogger;
 
 final class HomePresenter extends APresenter
 {
@@ -30,8 +26,12 @@ final class HomePresenter extends APresenter
      * Constructor.
      *
      * @param HomeService $service
+     * @param PetService $petService
      */
-    public function __construct(private readonly HomeService $service)
+    public function __construct(
+        private readonly HomeService $service,
+        private readonly PetService $petService
+    )
     {
         parent::__construct();
     }
@@ -70,6 +70,21 @@ final class HomePresenter extends APresenter
                 }
             }
         );
+    }
+
+    /**
+     * Action: Delete.
+     *
+     * @param int $id
+     *
+     * @return void
+     */
+    public function actionDelete(int $id): void
+    {
+        $this->petService->deleteById($id);
+
+        $this->flashMessageInfo('Pet was deleted');
+        $this->redirect('Home:default');
     }
 
     /**

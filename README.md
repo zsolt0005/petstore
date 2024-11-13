@@ -45,7 +45,5 @@ TODO
           - Formular so všetkými data
         - Quick Update
           - Formulár s name a status
-        - Delete
-          - Quick action ktorý odmaže zvieratko
   - Add pet
     - Formulár so všetkými data

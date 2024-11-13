@@ -15,9 +15,6 @@ final class RouterFactory
 	{
 		$router = new RouteList;
 
-        // [Web]
-        $router->addRoute('<presenter>/<action>', 'Home:default');
-
         # [API] Pets
         $router->add(new ApiRoute('/api/v1/pet', 'Api:Pet', [
             'methods' => [
@@ -61,6 +58,8 @@ final class RouterFactory
         $router->add(new ApiRoute('/api/v1/tag', 'Api:Tag', ['methods' => ['POST' => 'create']]));
         $router->add(new ApiRoute('/api/v1/tag/<id>', 'Api:Tag', ['methods' => ['DELETE' => 'delete']]));
 
+        // [Web]
+        $router->addRoute('<presenter>/<action>[/<id>]', 'Home:default');
 
         return $router;
 	}

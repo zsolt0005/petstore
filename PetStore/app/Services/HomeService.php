@@ -3,6 +3,8 @@
 namespace PetStore\Services;
 
 use InvalidArgumentException;
+use Nette\Application\LinkGenerator;
+use Nette\Application\UI\InvalidLinkException;
 use Nette\Http\IResponse;
 use Nette\Utils\Arrays;
 use PetStore\Data\HomeFilterData;
@@ -10,7 +12,9 @@ use PetStore\Data\Result;
 use PetStore\Data\Tag;
 use PetStore\Enums\HomeActionDefaultErrorResult;
 use PetStore\Presenters\Components\Grid\Builders\GridDataBuilder;
+use PetStore\Presenters\Components\Grid\Data\GridColumnActionData;
 use PetStore\Presenters\Components\Grid\Data\GridData;
+use PetStore\Presenters\Home\HomePresenter;
 use PetStore\SDK\Exceptions\RequestException;
 use PetStore\SDK\PetStoreSdk;
 
@@ -23,6 +27,15 @@ use PetStore\SDK\PetStoreSdk;
  */
 final class HomeService
 {
+    /**
+     * Constructor.
+     *
+     * @param LinkGenerator $linkGenerator
+     */
+    public function __construct(private LinkGenerator $linkGenerator)
+    {
+    }
+
     /**
      * Prepares the grid data.
      *
@@ -59,12 +72,17 @@ final class HomeService
             {
                 $tags = Arrays::map($pet->tags, static fn(Tag $tag) => $tag->name);
 
+                $actions = [
+                    GridColumnActionData::create('delete', 'Delete', $this->linkGenerator->link('Home:delete', ['id' => $pet->id]), 'btn-danger')
+                ];
+
                 $dataBuilder->addRow()
                     ->addColumn((string) $pet->id)
                     ->addColumn($pet->name)
                     ->addColumn($pet->category->name)
                     ->addColumn($pet->status)
-                    ->addColumn(implode(', ', $tags));
+                    ->addColumn(implode(', ', $tags))
+                    ->addActionsColumn($actions);
             }
         }
         catch (RequestException $e)
@@ -76,7 +94,7 @@ final class HomeService
                 default => Result::of(HomeActionDefaultErrorResult::INTERNAL_SERVER_ERROR, $dataBuilder->build())
             };
         }
-        catch (InvalidArgumentException $e)
+        catch (InvalidArgumentException | InvalidLinkException $e)
         {
             return Result::of(HomeActionDefaultErrorResult::INTERNAL_SERVER_ERROR, $dataBuilder->build());
         }
