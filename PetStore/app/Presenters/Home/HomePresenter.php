@@ -3,21 +3,74 @@
 namespace PetStore\Presenters\Home;
 
 use InvalidArgumentException;
-use Nette\Application\AbortException;
 use Nette\Http\IResponse;
-use Nette\Utils\Arrays;
-use PetStore\Data\JsonResponse;
-use PetStore\Data\Tag;
+use PetStore\Data\HomeFilterData;
+use PetStore\Enums\HomeActionDefaultErrorResult;
 use PetStore\Presenters\APresenter;
-use PetStore\Presenters\Components\Grid\Builders\GridDataBuilder;
+use PetStore\Presenters\Components\Grid\Data\GridData;
 use PetStore\Presenters\Components\Grid\Grid;
 use PetStore\SDK\Exceptions\RequestException;
-use PetStore\SDK\PetStoreSdk;
+use PetStore\Services\HomeService;
+use PetStore\Utils\TypeUtils;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 final class HomePresenter extends APresenter
 {
-    /** @var string Snippet id for the grid component. */
-    public const string SNIPPET_GRID = 'snippet-grid';
+    /** @var string Query parameter for filtering by ID. */
+    public const string QUERY_FILTER_BY_ID = 'filterById';
+
+    /** @var string Query parameter for filtering by Status. */
+    public const string QUERY_FILTER_BY_STATUS = 'filterByStatus';
+
+    /** @var string Query parameter for filtering by Tags. */
+    public const string QUERY_FILTER_BY_TAGS = 'filterByTags';
+
+    /**
+     * Constructor.
+     *
+     * @param HomeService $service
+     */
+    public function __construct(private readonly HomeService $service)
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Action: Default.
+     *
+     * @return void
+     */
+    public function actionDefault(): void
+    {
+        $filterData = $this->getActionDefaultFilterData();
+
+        $template = $this->getTemplate();
+        $template->fitlerData = $filterData;
+
+        $result = $this->service->prepareGridData($filterData);
+
+        $result->matchAll(
+            success: fn (GridData $gridData) => $template->gridData = $gridData,
+            failure: function (?HomeActionDefaultErrorResult $error)
+            {
+                switch ($error)
+                {
+                    case HomeActionDefaultErrorResult::NOT_FOUND:
+                        $this->flashMessageWarning('No pets found for the given filter');
+                        break;
+
+                    case HomeActionDefaultErrorResult::INVALID_FILTER_VALUE:
+                        $this->flashMessageWarning('Invalid filter value');
+                        break;
+
+                    case HomeActionDefaultErrorResult::INTERNAL_SERVER_ERROR:
+                        $this->flashMessageError('Something went wrong');
+                        break;
+                }
+            }
+        );
+    }
 
     /**
      * Creates the grid component.
@@ -26,60 +79,37 @@ final class HomePresenter extends APresenter
      */
     public function createComponentGrid(): Grid
     {
-        $data = GridDataBuilder::create()
-            ->addHeader('ID')
-            ->addHeader('Name')
-            ->addHeader('Category')
-            ->addHeader('Status')
-            ->addHeader('Tags')
-            ->build();
-
-        return new Grid($data);
+        return new Grid();
     }
 
     /**
-     * Handles the load of the initial data of the grid.
+     * Gets the filter data for action default.
      *
-     * @return void
-     *
-     * @throws AbortException
+     * @return HomeFilterData|null
      */
-    public function handleLoadAllPets(): void
+    private function getActionDefaultFilterData(): ?HomeFilterData
     {
-        $gridComponent = $this->getTypedComponent('grid', Grid::class);
-        if($gridComponent === null)
+        $request = $this->getRequest();
+
+        $filterById = $request->getParameter(self::QUERY_FILTER_BY_ID);
+        $filterByStatus = $request->getParameter(self::QUERY_FILTER_BY_STATUS);
+        $filterByTags = $request->getParameter(self::QUERY_FILTER_BY_TAGS);
+
+        if(!empty($filterById))
         {
-            return;
+            return new HomeFilterData(id: TypeUtils::convertToInt($filterById));
         }
 
-        try
+        if(!empty($filterByStatus))
         {
-            $pets = PetStoreSdk::create()->getAllPets();
-        }
-        catch (RequestException $e)
-        {
-            $this->sendResponse(new JsonResponse(null, $e->httpStatusCode));
-        }
-        catch (InvalidArgumentException $e)
-        {
-            $this->sendResponse(new JsonResponse(null, IResponse::S500_InternalServerError));
+            return new HomeFilterData(status: TypeUtils::convertToString($filterByStatus));
         }
 
-        $dataBuilder = $gridComponent->getDataBuilder()->clearRows();
-
-        foreach($pets as $pet)
+        if(!empty($filterByTags))
         {
-            $tags = Arrays::map($pet->tags, static fn(Tag $tag) => $tag->name);
-
-            $dataBuilder->addRow()
-                ->addColumn((string) $pet->id)
-                ->addColumn($pet->name)
-                ->addColumn($pet->category->name)
-                ->addColumn($pet->status)
-                ->addColumn(implode(', ', $tags));
+            return new HomeFilterData(tags: TypeUtils::convertToString($filterByTags));
         }
 
-        $gridComponent->setData($dataBuilder->build());
-        $this->redrawControl(self::SNIPPET_GRID);
+        return null;
     }
 }

@@ -17,6 +17,7 @@ services:
     - PetStore\Services\PetService
     - PetStore\Services\CategoryService
     - PetStore\Services\TagService
+    - PetStore\Services\HomeService
 
     # Repositories
     - PetStore\Repositories\XmlPetRepository('%appDir%/../db/pet-store.xml', 'Pets')

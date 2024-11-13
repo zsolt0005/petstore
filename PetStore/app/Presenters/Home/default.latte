@@ -1,13 +1,50 @@
-{varType PetStore\Presenters\Components\Grid\data\GridData $data}
+{varType PetStore\Presenters\Components\Grid\data\GridData $gridData}
+{varType PetStore\Data\HomeFilterData|null $fitlerData}
 
 {block content}
 
-<div n:snippet="PetStore\Presenters\Home\HomePresenter::SNIPPET_GRID">
-    {control grid}
+<div>
+    <p class="text-danger fw-bold">Only one filter can be active at the same time!</p>
+</div>
+<form class="row" method="GET">
+    <div class="col">
+        <input type="text" class="form-control {$fitlerData?->id !== null ? 'border-success' : ''}" placeholder="Filter by ID"
+               name="{PetStore\Presenters\Home\HomePresenter::QUERY_FILTER_BY_ID}"
+               value="{$fitlerData?->id}">
+    </div>
+
+    <div class="col">
+        <input type="text" class="form-control {$fitlerData?->status !== null ? 'border-success' : ''}" placeholder="Filter by Status"
+               name="{PetStore\Presenters\Home\HomePresenter::QUERY_FILTER_BY_STATUS}"
+               value="{$fitlerData?->status}">
+    </div>
+
+    <div class="col">
+        <input type="text" class="form-control {$fitlerData?->tags !== null ? 'border-success' : ''}" placeholder="Filter by Tags"
+               name="{PetStore\Presenters\Home\HomePresenter::QUERY_FILTER_BY_TAGS}"
+               value="{$fitlerData?->tags}">
+    </div>
+
+    <div class="col">
+        <div class="row ms-3">
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+            <div class="col-auto">
+                {if $fitlerData !== null}
+                    <a class="btn btn-danger" href="{link Home:default}">Clear</a>
+                {/if}
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="mt-4">
+    {control grid $gridData}
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        ajax.fetch({link loadAllPets!}).then( result => ajax.processPayload(result) )
-    });
-</script>
+{/block}
+
+{block scripts}
+
+{/block}
