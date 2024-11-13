@@ -102,8 +102,8 @@ final class XmlPetRepository extends AXmlRepository implements IPetRepository
             $this->data,
             function(Pet $d) use ($tags): bool
             {
-                $tagIds = Arrays::map($d->tags, static fn(Tag $tag) => $tag->id);
-                return Arrays::some($tagIds, static fn(int $tagId) => Arrays::contains($tags, (string) $tagId));
+                $tagNames = Arrays::map($d->tags, static fn(Tag $tag) => $tag->name);
+                return Arrays::some($tagNames, static fn(string $tagName) => Arrays::contains($tags, (string) $tagName));
             }
         ));
     }

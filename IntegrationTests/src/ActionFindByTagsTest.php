@@ -41,13 +41,14 @@ final class ActionFindByTagsTest extends TestsBase
         $categoryId = 1;
         $tagId = 1;
         $petId = 1;
+        $tagName = 'Black';
 
         $pet1 = new Pet();
         $pet1->id = $petId;
         $pet1->name = 'Dog 1';
         $pet1->status = 'available';
         $pet1->category = $this->createCategory($categoryId, 'Dogs');
-        $pet1->tags = [$this->createTag($tagId, 'Black')];
+        $pet1->tags = [$this->createTag($tagId, $tagName)];
 
         HttpRequestTester::post('/pet')
             ->json($pet1)
@@ -55,7 +56,7 @@ final class ActionFindByTagsTest extends TestsBase
             ->test();
 
         // Test
-        HttpRequestTester::get('/pet/findByTags?tags=' . $tagId)
+        HttpRequestTester::get('/pet/findByTags?tags=' . $tagName)
             ->assertResponseStatusCode(200)
             ->assertResponseJsonArray(Pet::class, [$pet1])
             ->test();
@@ -75,20 +76,21 @@ final class ActionFindByTagsTest extends TestsBase
         $tagId = 1;
         $pet1Id = 1;
         $pet2Id = 2;
+        $tagName = 'Black';
 
         $pet1 = new Pet();
         $pet1->id = $pet1Id;
         $pet1->name = 'Dog 1';
         $pet1->status = 'available';
         $pet1->category = $this->createCategory($categoryId, 'Dogs');
-        $pet1->tags = [$this->createTag($tagId, 'Black')];
+        $pet1->tags = [$this->createTag($tagId, $tagName)];
 
         $pet2 = new Pet();
         $pet2->id = $pet2Id;
         $pet2->name = 'Dog 2';
         $pet2->status = 'available';
         $pet2->category = $this->createCategory($categoryId, 'Dogs');
-        $pet2->tags = [$this->createTag($tagId, 'Black')];
+        $pet2->tags = [$this->createTag($tagId, $tagName)];
         HttpRequestTester::post('/pet')
             ->json($pet1)
             ->assertResponseStatusCode(200)
@@ -99,7 +101,7 @@ final class ActionFindByTagsTest extends TestsBase
             ->test();
 
         // Test
-        HttpRequestTester::get('/pet/findByTags?tags=' . $tagId)
+        HttpRequestTester::get('/pet/findByTags?tags=' . $tagName)
             ->assertResponseStatusCode(200)
             ->assertResponseJsonArray(Pet::class, [$pet1, $pet2])
             ->test();
