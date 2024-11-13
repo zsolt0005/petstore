@@ -46,12 +46,12 @@ final class HomePresenter extends APresenter
         $filterData = $this->getActionDefaultFilterData();
 
         $template = $this->getTemplate();
-        $template->fitlerData = $filterData;
+        $template->fitlerData = $filterData; // @phpstan-ignore-line
 
         $result = $this->service->prepareGridData($filterData);
 
         $result->matchAll(
-            success: fn (GridData $gridData) => $template->gridData = $gridData,
+            success: fn (GridData $gridData) => $template->gridData = $gridData, // @phpstan-ignore-line
             failure: function (?HomeActionDefaultErrorResult $error)
             {
                 switch ($error)
@@ -91,9 +91,9 @@ final class HomePresenter extends APresenter
     {
         $request = $this->getRequest();
 
-        $filterById = $request->getParameter(self::QUERY_FILTER_BY_ID);
-        $filterByStatus = $request->getParameter(self::QUERY_FILTER_BY_STATUS);
-        $filterByTags = $request->getParameter(self::QUERY_FILTER_BY_TAGS);
+        $filterById = $request?->getParameter(self::QUERY_FILTER_BY_ID);
+        $filterByStatus = $request?->getParameter(self::QUERY_FILTER_BY_STATUS);
+        $filterByTags = $request?->getParameter(self::QUERY_FILTER_BY_TAGS);
 
         if(!empty($filterById))
         {

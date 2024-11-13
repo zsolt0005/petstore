@@ -68,9 +68,50 @@ final class PetStoreSdk
      * @throws SDKRequestException When the request fails
      * @throws InvalidArgumentException When the parsing fails
      */
-    public function getAllPets(): array
+    public function getAll(): array
     {
         return $this->makeRequestAndParseArrayResponse(Pet::class, self::GET, '/pet');
+    }
+
+    /**
+     * Gets a pet by its ID.
+     *
+     * @param int $petId
+     *
+     * @return Pet
+     *
+     * @throws SDKRequestException When the request fails
+     * @throws InvalidArgumentException When the parsing fails
+     */
+    public function getById(int $petId): Pet
+    {
+        return $this->makeRequestAndParseObjectResponse(Pet::class, self::GET, '/pet/' . $petId);
+    }
+
+    /**
+     * Gets all the pets by status.
+     *
+     * @return Pet[]
+     *
+     * @throws SDKRequestException When the request fails
+     * @throws InvalidArgumentException When the parsing fails
+     */
+    public function findByStatus(string $status): array
+    {
+        return $this->makeRequestAndParseArrayResponse(Pet::class, self::GET, '/pet/findByStatus?status=' . $status);
+    }
+
+    /**
+     * Gets all the pets by tags.
+     *
+     * @return Pet[]
+     *
+     * @throws SDKRequestException When the request fails
+     * @throws InvalidArgumentException When the parsing fails
+     */
+    public function findByTags(string $tags): array
+    {
+        return $this->makeRequestAndParseArrayResponse(Pet::class, self::GET, '/pet/findByTags?tags=' . $tags);
     }
 
     /**
@@ -118,6 +159,48 @@ final class PetStoreSdk
 
         /** @var array<T> $parsedArray */
         return $parsedArray;
+    }
+
+    /**
+     * Makes a request, parses the response and returns it.
+     *
+     * @template T of object
+     *
+     * @param class-string<T> $type
+     * @param string $method
+     * @param string $endpoint
+     * @param array<string, mixed> $options
+     *
+     * @return T
+     *
+     * @throws SDKRequestException When the request fails
+     * @throws InvalidArgumentException When the parsing fails
+     */
+    private function makeRequestAndParseObjectResponse(string $type, string $method, string $endpoint, array $options = []): object
+    {
+        $mapper = new JsonMapper();
+        $mapper->undefinedPropertyHandler = static fn() => throw new JsonMapper_Exception();
+
+        $response = $this->makeRequest($method, $endpoint, $options);
+        if($response?->getStatusCode() !== 200)
+        {
+            throw new SDKRequestException($response?->getStatusCode() ?? 0);
+        }
+
+        try
+        {
+            /** @var object $parsedObject */
+            $parsedObject = Json::decode($response->getBody()->getContents(), false);
+
+            /** @var T $mappedObject */
+            $mappedObject = $mapper->map($parsedObject, $type);
+
+            return $mappedObject;
+        }
+        catch (JsonMapper_Exception | JsonException | RuntimeException $e)
+        {
+            throw new InvalidArgumentException('Failed to parse as ' . $type . ' with message: ' . $e->getMessage());
+        }
     }
 
     /**

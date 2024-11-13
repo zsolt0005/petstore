@@ -37,17 +37,23 @@ final class HomeService
             ->addHeader('Name')
             ->addHeader('Category')
             ->addHeader('Status')
-            ->addHeader('Tags');
+            ->addHeader('Tags')
+            ->addHeader('Actions');
 
         try
         {
             $pets = match (true)
             {
-                $filterData?->id !== null => PetStoreSdk::create()->getAllPets(), // TODO
-                $filterData?->status !== null => PetStoreSdk::create()->getAllPets(), // TODO
-                $filterData?->tags !== null => PetStoreSdk::create()->getAllPets(), // TODO
-                default => PetStoreSdk::create()->getAllPets(),
+                $filterData?->id !== null => [PetStoreSdk::create()->getById($filterData->id)],
+                $filterData?->status !== null => PetStoreSdk::create()->findByStatus($filterData->status),
+                $filterData?->tags !== null => PetStoreSdk::create()->findByTags($filterData->tags),
+                default => PetStoreSdk::create()->getAll(),
             };
+
+            if(empty($pets))
+            {
+                return Result::of(HomeActionDefaultErrorResult::NOT_FOUND, $dataBuilder->build());
+            }
 
             foreach($pets as $pet)
             {

@@ -40,10 +40,6 @@ TODO
 # TODO
 - Views
   - Overview
-      - Fitre
-        - ByIdFilter
-        - ByStatusFilter
-        - ByTagsFilter
       - Actions
         - Update
           - Formular so všetkými data
