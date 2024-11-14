@@ -297,7 +297,7 @@ final readonly class PetService
      */
     private function validatePetData(Pet $data): bool
     {
-        if(!isset($data->id) || $data->id <= 0)
+        if(!isset($data->id) || $data->id < 0)
         {
             return false;
         }

@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\Annotation\SerializedPath;
 final class Pet
 {
     /** @var int ID. */
-    public int $id;
+    public int $id = 0;
 
     /** @var string Name. */
     public string $name;
