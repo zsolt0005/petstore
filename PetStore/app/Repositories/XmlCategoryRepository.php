@@ -73,4 +73,10 @@ final class XmlCategoryRepository extends AXmlRepository implements ICategoryRep
         $existingData = Arrays::first($this->data, static fn(Category $d) => $d->id === $id);
         return $existingData !== null;
     }
+
+    /** @inheritDoc */
+    public function findByName(string $name): ?Category
+    {
+        return Arrays::first($this->data, static fn(Category $d) => $d->name === $name);
+    }
 }

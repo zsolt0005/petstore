@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6b3017511a9931b7072421c97e611252",
+    "content-hash": "8f18800711e53cde3dc3f72866604008",
     "packages": [
         {
             "name": "contributte/api-router",
@@ -3671,6 +3671,55 @@
     ],
     "packages-dev": [
         {
+            "name": "phpstan/extension-installer",
+            "version": "1.4.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/extension-installer.git",
+                "reference": "e7bd2bf9662c96368303a284be3f2079e204b341"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/extension-installer/zipball/e7bd2bf9662c96368303a284be3f2079e204b341",
+                "reference": "e7bd2bf9662c96368303a284be3f2079e204b341",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^2.0",
+                "php": "^7.2 || ^8.0",
+                "phpstan/phpstan": "^1.12.0 || ^2.0"
+            },
+            "require-dev": {
+                "composer/composer": "^2.0",
+                "php-parallel-lint/php-parallel-lint": "^1.2.0",
+                "phpstan/phpstan-strict-rules": "^0.11 || ^0.12 || ^1.0"
+            },
+            "default-branch": true,
+            "type": "composer-plugin",
+            "extra": {
+                "class": "PHPStan\\ExtensionInstaller\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "PHPStan\\ExtensionInstaller\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Composer plugin for automatic installation of PHPStan extensions",
+            "keywords": [
+                "dev",
+                "static analysis"
+            ],
+            "support": {
+                "issues": "https://github.com/phpstan/extension-installer/issues",
+                "source": "https://github.com/phpstan/extension-installer/tree/1.4.x"
+            },
+            "time": "2024-09-06T14:27:20+00:00"
+        },
+        {
             "name": "phpstan/phpstan",
             "version": "2.0.x-dev",
             "source": {
@@ -3728,6 +3777,68 @@
                 }
             ],
             "time": "2024-11-13T16:32:44+00:00"
+        },
+        {
+            "name": "phpstan/phpstan-nette",
+            "version": "2.0.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/phpstan-nette.git",
+                "reference": "cacb6983bbdf44d5c3a7222e5ca74f61f8531806"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpstan-nette/zipball/cacb6983bbdf44d5c3a7222e5ca74f61f8531806",
+                "reference": "cacb6983bbdf44d5c3a7222e5ca74f61f8531806",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0",
+                "phpstan/phpstan": "^2.0"
+            },
+            "conflict": {
+                "nette/application": "<2.3.0",
+                "nette/component-model": "<2.3.0",
+                "nette/di": "<2.3.0",
+                "nette/forms": "<2.3.0",
+                "nette/http": "<2.3.0",
+                "nette/utils": "<2.3.0"
+            },
+            "require-dev": {
+                "nette/application": "^3.0",
+                "nette/di": "^3.1.10",
+                "nette/forms": "^3.0",
+                "nette/utils": "^2.3.0 || ^3.0.0",
+                "php-parallel-lint/php-parallel-lint": "^1.2",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpstan/phpstan-strict-rules": "^2.0",
+                "phpunit/phpunit": "^9.6"
+            },
+            "default-branch": true,
+            "type": "phpstan-extension",
+            "extra": {
+                "phpstan": {
+                    "includes": [
+                        "extension.neon",
+                        "rules.neon"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PHPStan\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Nette Framework class reflection extension for PHPStan",
+            "support": {
+                "issues": "https://github.com/phpstan/phpstan-nette/issues",
+                "source": "https://github.com/phpstan/phpstan-nette/tree/2.0.0"
+            },
+            "time": "2024-10-26T16:03:48+00:00"
         }
     ],
     "aliases": [],

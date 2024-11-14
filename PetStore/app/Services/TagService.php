@@ -65,4 +65,16 @@ final readonly class TagService
         $this->repository->delete($id);
         return true;
     }
+
+    /**
+     * Finds a tag by its name.
+     *
+     * @param string $name
+     *
+     * @return Tag|null
+     */
+    public function findByName(string $name): ?Tag
+    {
+        return $this->repository->findByName($name);
+    }
 }

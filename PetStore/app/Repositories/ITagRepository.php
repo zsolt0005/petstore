@@ -39,4 +39,13 @@ interface ITagRepository
      * @return bool
      */
     public function exists(int $id): bool;
+
+    /**
+     * Finds a tag by its name.
+     *
+     * @param string $name
+     *
+     * @return Tag|null
+     */
+    public function findByName(string $name): ?Tag;
 }

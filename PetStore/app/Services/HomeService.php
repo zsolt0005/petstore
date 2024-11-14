@@ -6,11 +6,14 @@ use InvalidArgumentException;
 use Nette\Application\LinkGenerator;
 use Nette\Application\UI\InvalidLinkException;
 use Nette\Http\IResponse;
+use Nette\Utils\ArrayHash;
 use Nette\Utils\Arrays;
 use PetStore\Data\HomeFilterData;
+use PetStore\Data\Pet;
 use PetStore\Data\Result;
 use PetStore\Data\Tag;
 use PetStore\Enums\HomeActionDefaultErrorResult;
+use PetStore\Enums\HomeActionDeleteErrorResult;
 use PetStore\Presenters\Components\Grid\Builders\GridDataBuilder;
 use PetStore\Presenters\Components\Grid\Data\GridColumnActionData;
 use PetStore\Presenters\Components\Grid\Data\GridData;
@@ -25,14 +28,22 @@ use PetStore\SDK\PetStoreSdk;
  * @author  Zsolt Döme
  * @since   2024
  */
-final class HomeService
+final readonly class HomeService
 {
     /**
      * Constructor.
      *
      * @param LinkGenerator $linkGenerator
+     * @param CategoryService $categoryService
+     * @param TagService $tagService
+     * @param PetService $petService
      */
-    public function __construct(private LinkGenerator $linkGenerator)
+    public function __construct(
+        private LinkGenerator $linkGenerator,
+        private CategoryService $categoryService,
+        private TagService $tagService,
+        private PetService $petService
+    )
     {
     }
 
@@ -102,4 +113,71 @@ final class HomeService
         return Result::of(null, $dataBuilder->build());
     }
 
+    /**
+     * Deletes a pet by its ID.
+     *
+     * @param int $id
+     *
+     * @return Result<HomeActionDeleteErrorResult, int>
+     */
+    public function deleteById(int $id): Result
+    {
+        try
+        {
+            PetStoreSdk::create()->deleteById($id);
+            return Result::of(success: $id);
+        }
+        catch (RequestException $e)
+        {
+            return match ($e->getCode())
+            {
+                IResponse::S400_BadRequest => Result::of(failure: HomeActionDeleteErrorResult::BAD_REQUEST),
+                default => Result::of(failure: HomeActionDeleteErrorResult::INTERNAL_SERVER_ERROR)
+            };
+        }
+    }
+
+    /**
+     * Creates a new pet.
+     *
+     * @param ArrayHash<string> $values
+     *
+     * @return Result
+     */
+    public function createPet(ArrayHash $values): Result
+    {
+        $name = $values[HomePresenter::FORM_INPUT_CREATE_NAME];
+        $categoryName = $values[HomePresenter::FORM_INPUT_CREATE_CATEGORY];
+        $tagNames = $values[HomePresenter::FORM_INPUT_CREATE_TAGS];
+        $status = $values[HomePresenter::FORM_INPUT_CREATE_STATUS];
+
+        $category = $this->categoryService->findByName($categoryName);
+        if($category === null)
+        {
+            //$this->flashMessage('Category ' . $category . ' doesn\'t exist');
+        }
+
+        $tagNames = explode(',', str_replace(' ', '', $tagNames));
+        $tags = [];
+        foreach($tagNames as $tagName)
+        {
+            $tag = $this->tagService->findByName($tagName);
+            if($tag === null)
+            {
+                //$this->flashMessage('Tag ' . $tag . ' does not exist');
+            }
+
+            $tags[] = $tag;
+        }
+
+        $pet = new Pet();
+        $pet->name = $name;
+        $pet->category = $category;
+        $pet->tags = $tags;
+        $pet->status = $status;
+
+        $result = $this->petService->create($pet);
+
+        return Result::of();
+    }
 }

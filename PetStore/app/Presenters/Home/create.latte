@@ -1,0 +1,40 @@
+{block content}
+
+<h2>Create a new Pet</h2>
+
+<form n:name="createForm" class="mt-3">
+
+    <div class="mb-3">
+        {label PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_NAME, class => ['form-label'] /}
+        {input PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_NAME, class => ['form-control']}
+        <div n:ifcontent class="form-text text-danger fw-bold">
+            {inputError PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_NAME}
+        </div>
+    </div>
+
+    <div class="mb-3">
+        {label PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_CATEGORY, class => ['form-label'] /}
+        {input PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_CATEGORY, class => ['form-control']}
+        <div n:ifcontent class="form-text text-danger fw-bold">
+            {inputError PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_CATEGORY}
+        </div>
+    </div>
+
+    <div class="mb-3">
+        {label PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_TAGS, class => ['form-label'] /}
+        {input PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_TAGS, class => ['form-control']}
+        <div n:ifcontent class="form-text text-danger fw-bold">
+            {inputError PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_TAGS}
+        </div>
+    </div>
+
+    <div class="mb-3">
+        {label PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_STATUS, class => ['form-label'] /}
+        {input PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_STATUS, class => ['form-control']}
+        <div n:ifcontent class="form-text text-danger fw-bold">
+            {inputError PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_STATUS}
+        </div>
+    </div>
+
+    {input PetStore\Presenters\Home\HomePresenter::FORM_SUBMIT_CREATE, class => ['btn', 'btn-primary']}
+</form>

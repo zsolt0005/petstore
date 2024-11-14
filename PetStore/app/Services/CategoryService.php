@@ -65,4 +65,16 @@ final readonly class CategoryService
         $this->repository->delete($id);
         return true;
     }
+
+    /**
+     * Finds a category by its name.
+     *
+     * @param string $name
+     *
+     * @return Category|null
+     */
+    public function findByName(string $name): ?Category
+    {
+        return $this->repository->findByName($name);
+    }
 }

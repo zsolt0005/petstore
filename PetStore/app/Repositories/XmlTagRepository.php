@@ -73,4 +73,10 @@ final class XmlTagRepository extends AXmlRepository implements ITagRepository
         $existingData = Arrays::first($this->data, static fn(Tag $d) => $d->id === $id);
         return $existingData !== null;
     }
+
+    /** @inheritDoc */
+    public function findByName(string $name): ?Tag
+    {
+        return Arrays::first($this->data, static fn(Tag $d) => $d->name === $name);
+    }
 }

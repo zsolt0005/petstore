@@ -2,8 +2,12 @@
 
 namespace PetStore\Presenters\Home;
 
+use Nette\Application\AbortException;
+use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
 use PetStore\Data\HomeFilterData;
 use PetStore\Enums\HomeActionDefaultErrorResult;
+use PetStore\Enums\HomeActionDeleteErrorResult;
 use PetStore\Presenters\APresenter;
 use PetStore\Presenters\Components\Grid\Data\GridData;
 use PetStore\Presenters\Components\Grid\Grid;
@@ -13,14 +17,19 @@ use PetStore\Utils\TypeUtils;
 
 final class HomePresenter extends APresenter
 {
-    /** @var string Query parameter for filtering by ID. */
-    public const string QUERY_FILTER_BY_ID = 'filterById';
+    /** @var string Query parameters for filtering. */
+    public const string
+        QUERY_FILTER_BY_ID = 'filterById',
+        QUERY_FILTER_BY_STATUS = 'filterByStatus',
+        QUERY_FILTER_BY_TAGS = 'filterByTags';
 
-    /** @var string Query parameter for filtering by Status. */
-    public const string QUERY_FILTER_BY_STATUS = 'filterByStatus';
-
-    /** @var string Query parameter for filtering by Tags. */
-    public const string QUERY_FILTER_BY_TAGS = 'filterByTags';
+    /** @var string Create pet form inputs. */
+    public const string
+        FORM_INPUT_CREATE_NAME = 'name',
+        FORM_INPUT_CREATE_CATEGORY = 'category',
+        FORM_INPUT_CREATE_TAGS = 'tags',
+        FORM_INPUT_CREATE_STATUS = 'status',
+        FORM_SUBMIT_CREATE = 'create';
 
     /**
      * Constructor.
@@ -46,12 +55,12 @@ final class HomePresenter extends APresenter
         $filterData = $this->getActionDefaultFilterData();
 
         $template = $this->getTemplate();
-        $template->fitlerData = $filterData; // @phpstan-ignore-line
+        $template->fitlerData = $filterData;
 
         $result = $this->service->prepareGridData($filterData);
 
         $result->matchAll(
-            success: fn (GridData $gridData) => $template->gridData = $gridData, // @phpstan-ignore-line
+            success: function (?GridData $gridData) use ($template) { $template->gridData = $gridData; },
             failure: function (?HomeActionDefaultErrorResult $error)
             {
                 switch ($error)
@@ -78,12 +87,17 @@ final class HomePresenter extends APresenter
      * @param int $id
      *
      * @return void
+     * @throws AbortException
      */
     public function actionDelete(int $id): void
     {
-        $this->petService->deleteById($id);
+        $result = $this->service->deleteById($id);
 
-        $this->flashMessageInfo('Pet was deleted');
+        $result->match(
+            success: fn () => $this->flashMessageInfo('Pet was deleted'),
+            failure: fn (HomeActionDeleteErrorResult $errorResult) => $this->flashMessageError('Something went wrong')
+        );
+
         $this->redirect('Home:default');
     }
 
@@ -95,6 +109,53 @@ final class HomePresenter extends APresenter
     public function createComponentGrid(): Grid
     {
         return new Grid();
+    }
+
+    /**
+     * Creates the creat pet form component.
+     *
+     * @return Form
+     */
+    public function createComponentCreateForm(): Form
+    {
+        $form = new Form();
+
+        $form->addText(self::FORM_INPUT_CREATE_NAME, 'Name');
+        $form->addText(self::FORM_INPUT_CREATE_CATEGORY, 'Category');
+        $form->addText(self::FORM_INPUT_CREATE_TAGS, 'Tags');
+        $form->addText(self::FORM_INPUT_CREATE_STATUS, 'Status');
+
+        $form ->addSubmit(self::FORM_SUBMIT_CREATE, 'Create');
+
+        $form->onSuccess[] = function (Form $form, ArrayHash $values): void
+        {
+            //$result = $this->service->createPet($values);
+        };
+
+        $form->onValidate[] = function (Form $form, ArrayHash $values): void
+        {
+            if(empty($values[self::FORM_INPUT_CREATE_NAME]))
+            {
+                $form[self::FORM_INPUT_CREATE_NAME]->addError('Pet name cannot be empty');
+            }
+
+            if(empty($values[self::FORM_INPUT_CREATE_CATEGORY]))
+            {
+                $form[self::FORM_INPUT_CREATE_CATEGORY]->addError('Category cannot be empty');
+            }
+
+            if(empty($values[self::FORM_INPUT_CREATE_TAGS]))
+            {
+                $form[self::FORM_INPUT_CREATE_TAGS]->addError('Tags cannot be empty');
+            }
+
+            if(empty($values[self::FORM_INPUT_CREATE_STATUS]))
+            {
+                $form[self::FORM_INPUT_CREATE_STATUS]->addError('Status cannot be empty');
+            }
+        };
+
+        return $form;
     }
 
     /**

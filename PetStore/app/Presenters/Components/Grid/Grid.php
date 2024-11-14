@@ -24,7 +24,7 @@ final class Grid extends Control
     public function render(GridData $data): void
     {
         $template = $this->getTemplate()->setFile(__DIR__ . '/default.latte');
-        $template->data = $data; // @phpstan-ignore-line
+        $template->data = $data;
         $template->render();
     }
 }

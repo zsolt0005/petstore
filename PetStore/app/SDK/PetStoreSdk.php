@@ -115,6 +115,19 @@ final class PetStoreSdk
     }
 
     /**
+     * Deletes a pet.
+     *
+     * @param int $petId
+     *
+     * @return void
+     * @throws SDKRequestException When the request fails
+     */
+    public function deleteById(int $petId): void
+    {
+        $this->makeRequest(self::DELETE, '/pet/' . $petId);
+    }
+
+    /**
      * Makes a request, parses the response and returns it.
      *
      * @template T
@@ -135,10 +148,6 @@ final class PetStoreSdk
         $mapper->undefinedPropertyHandler = static fn() => throw new JsonMapper_Exception();
 
         $response = $this->makeRequest($method, $endpoint, $options);
-        if($response?->getStatusCode() !== 200)
-        {
-            throw new SDKRequestException($response?->getStatusCode() ?? 0);
-        }
 
         try
         {
@@ -182,10 +191,6 @@ final class PetStoreSdk
         $mapper->undefinedPropertyHandler = static fn() => throw new JsonMapper_Exception();
 
         $response = $this->makeRequest($method, $endpoint, $options);
-        if($response?->getStatusCode() !== 200)
-        {
-            throw new SDKRequestException($response?->getStatusCode() ?? 0);
-        }
 
         try
         {
@@ -211,6 +216,7 @@ final class PetStoreSdk
      * @param array<string, mixed> $options
      *
      * @return ResponseInterface|null
+     * @throws SDKRequestException
      */
     private function makeRequest(string $method, string $endpoint, array $options = []): ?ResponseInterface
     {
@@ -218,7 +224,7 @@ final class PetStoreSdk
 
         try
         {
-            return $this->client->request($method, $endpointToCall, $options);
+            $response = $this->client->request($method, $endpointToCall, $options);
         }
         catch(RequestException $e)
         {
@@ -228,5 +234,12 @@ final class PetStoreSdk
         {
             return null;
         }
+
+        if($response?->getStatusCode() !== 200)
+        {
+            throw new SDKRequestException($response?->getStatusCode() ?? 0);
+        }
+
+        return $response;
     }
 }

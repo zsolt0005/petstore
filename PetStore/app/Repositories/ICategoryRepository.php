@@ -39,4 +39,13 @@ interface ICategoryRepository
      * @return bool
      */
     public function exists(int $id): bool;
+
+    /**
+     * Finds a category by its name.
+     *
+     * @param string $name
+     *
+     * @return Category|null
+     */
+    public function findByName(string $name): ?Category;
 }

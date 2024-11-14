@@ -24,7 +24,7 @@ final class Error4xxPresenter extends Presenter
 		$file = is_file($file = __DIR__ . "/$code.latte")
 			? $file
 			: __DIR__ . '/4xx.latte';
-		$this->template->httpCode = $code; // @phpstan-ignore-line
+		$this->template->httpCode = $code;
 		$this->template->setFile($file); // @phpstan-ignore-line
 	}
 }
