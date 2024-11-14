@@ -30,8 +30,10 @@ fi
 # Check the exit code and report the result
 if [ "$EXIT_CODE" -eq 0 ] && [ "$STATUS_CODE" = "exited" ]; then
     echo "Tests passed!"
+    SCRIPT_EXIT_CODE=0
 else
     echo "Tests failed!"
+    SCRIPT_EXIT_CODE=1
 fi
 
-exit "$EXIT_CODE"
+exit "$SCRIPT_EXIT_CODE"
