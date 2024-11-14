@@ -4,6 +4,7 @@ namespace PetStore\SDK;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\RequestOptions;
 use InvalidArgumentException;
 use JsonException;
 use JsonMapper;
@@ -55,7 +56,7 @@ final class PetStoreSdk
      *
      * @return self
      */
-    public static function create(): self
+    public static function createInstance(): self
     {
         return new self();
     }
@@ -125,6 +126,22 @@ final class PetStoreSdk
     public function deleteById(int $petId): void
     {
         $this->makeRequest(self::DELETE, '/pet/' . $petId);
+    }
+
+    /**
+     * Creates a new pet.
+     *
+     * @param Pet $pet
+     *
+     * @return Pet
+     * @throws SDKRequestException When the request fails
+     * @throws InvalidArgumentException When the parsing fails
+     */
+    public function create(Pet $pet): Pet
+    {
+        return $this->makeRequestAndParseObjectResponse(Pet::class, self::POST, '/pet', [
+            RequestOptions::JSON => $pet
+        ]);
     }
 
     /**
@@ -228,7 +245,7 @@ final class PetStoreSdk
         }
         catch(RequestException $e)
         {
-            return $e->getResponse();
+            $response =  $e->getResponse();
         }
         catch(Throwable $e)
         {
