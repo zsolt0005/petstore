@@ -47,6 +47,12 @@ final class XmlPetRepository extends AXmlRepository implements IPetRepository
             return true;
         }
 
+        // Generate a new ID if not supplied
+        if($data->id === 0)
+        {
+            $data->id = Arrays::last($this->data)->id + 1;
+        }
+
         $this->data[] = $data;
         $this->save();
 
