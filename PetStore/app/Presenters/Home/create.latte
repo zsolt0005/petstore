@@ -36,5 +36,13 @@
         </div>
     </div>
 
+    <div class="mb-3">
+        {label PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_IMAGES, class => ['form-label'] /}
+        {input PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_IMAGES, class => ['form-control']}
+        <div n:ifcontent class="form-text text-danger fw-bold">
+            {inputError PetStore\Presenters\Home\HomePresenter::FORM_INPUT_CREATE_IMAGES}
+        </div>
+    </div>
+
     {input PetStore\Presenters\Home\HomePresenter::FORM_SUBMIT_CREATE, class => ['btn', 'btn-primary']}
 </form>
