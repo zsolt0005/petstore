@@ -1,6 +1,24 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Call to an undefined method Nette\\ComponentModel\\IComponent\:\:addError\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: app/Presenters/Home/HomePresenter.php
+
+		-
+			message: '#^Property Nette\\Forms\\Container\:\:\$onValidate \(array\<callable\(Nette\\Application\\UI\\Form, mixed\)\: void\>\) does not accept non\-empty\-array\<\(callable\(Nette\\Application\\UI\\Form, mixed\)\: void\)\|\(Closure\(Nette\\Application\\UI\\Form, Nette\\Utils\\ArrayHash\)\: void\)\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Presenters/Home/HomePresenter.php
+
+		-
+			message: '#^Property Nette\\Forms\\Form\:\:\$onSuccess \(array\<callable\(Nette\\Application\\UI\\Form, mixed\)\: void\>\) does not accept non\-empty\-array\<\(callable\(Nette\\Application\\UI\\Form, mixed\)\: void\)\|\(Closure\(Nette\\Application\\UI\\Form, Nette\\Utils\\ArrayHash\)\: never\)\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Presenters/Home/HomePresenter.php
+
+		-
 			message: '#^Method PetStore\\Services\\CategoryService\:\:create\(\) should return PetStore\\Data\\Result\<PetStore\\Enums\\CreateCategoryErrorResult, PetStore\\Data\\Category\> but returns PetStore\\Data\\Result\<PetStore\\Enums\\CreateCategoryErrorResult\:\:FAILED, null\>\.$#'
 			identifier: return.type
 			count: 1
@@ -17,6 +35,54 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: app/Services/CategoryService.php
+
+		-
+			message: '#^Method PetStore\\Services\\HomeService\:\:createPet\(\) should return PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionCreateErrorResult, PetStore\\Data\\Pet\> but returns PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionCreateErrorResult\:\:CATEGORY_NOT_FOUND, null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/HomeService.php
+
+		-
+			message: '#^Method PetStore\\Services\\HomeService\:\:createPet\(\) should return PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionCreateErrorResult, PetStore\\Data\\Pet\> but returns PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionCreateErrorResult\:\:INTERNAL_SERVER_ERROR, null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/HomeService.php
+
+		-
+			message: '#^Method PetStore\\Services\\HomeService\:\:createPet\(\) should return PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionCreateErrorResult, PetStore\\Data\\Pet\> but returns PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionCreateErrorResult\:\:INVALID_IMAGE_FILE, null\>\|PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionDefaultErrorResult\:\:INTERNAL_SERVER_ERROR, null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/HomeService.php
+
+		-
+			message: '#^Method PetStore\\Services\\HomeService\:\:createPet\(\) should return PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionCreateErrorResult, PetStore\\Data\\Pet\> but returns PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionCreateErrorResult\:\:INVALID_INPUT, null\>\|PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionDefaultErrorResult\:\:INTERNAL_SERVER_ERROR, null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/HomeService.php
+
+		-
+			message: '#^Method PetStore\\Services\\HomeService\:\:createPet\(\) should return PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionCreateErrorResult, PetStore\\Data\\Pet\> but returns PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionCreateErrorResult\:\:TAG_NOT_FOUND, null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/HomeService.php
+
+		-
+			message: '#^Method PetStore\\Services\\HomeService\:\:createPet\(\) should return PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionCreateErrorResult, PetStore\\Data\\Pet\> but returns PetStore\\Data\\Result\<null, PetStore\\Data\\Pet\>\.$#'
+			identifier: return.type
+			count: 2
+			path: app/Services/HomeService.php
+
+		-
+			message: '#^Method PetStore\\Services\\HomeService\:\:deleteById\(\) should return PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionDeleteErrorResult, int\> but returns PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionDeleteErrorResult\:\:BAD_REQUEST, null\>\|PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionDeleteErrorResult\:\:INTERNAL_SERVER_ERROR, null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/HomeService.php
+
+		-
+			message: '#^Method PetStore\\Services\\HomeService\:\:deleteById\(\) should return PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionDeleteErrorResult, int\> but returns PetStore\\Data\\Result\<null, int\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/HomeService.php
 
 		-
 			message: '#^Method PetStore\\Services\\HomeService\:\:prepareGridData\(\) should return PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionDefaultErrorResult, PetStore\\Presenters\\Components\\Grid\\Data\\GridData\> but returns PetStore\\Data\\Result\<PetStore\\Enums\\HomeActionDefaultErrorResult\:\:INTERNAL_SERVER_ERROR, PetStore\\Presenters\\Components\\Grid\\Data\\GridData\>\.$#'
