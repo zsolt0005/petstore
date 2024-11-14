@@ -44,5 +44,3 @@ TODO
       - Actions
         - Update
           - Formular so všetkými data
-        - Quick Update
-          - Formulár s name a status
