@@ -117,6 +117,6 @@ final class XmlPetRepository extends AXmlRepository implements IPetRepository
     /** @inheritDoc */
     public function getAll(): array
     {
-        return $this->data;
+        return array_values($this->data);
     }
 }

@@ -6,13 +6,14 @@ use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 use PetStore\Data\HomeFilterData;
+use PetStore\Data\Pet;
+use PetStore\Enums\HomeActionCreateErrorResult;
 use PetStore\Enums\HomeActionDefaultErrorResult;
 use PetStore\Enums\HomeActionDeleteErrorResult;
 use PetStore\Presenters\APresenter;
 use PetStore\Presenters\Components\Grid\Data\GridData;
 use PetStore\Presenters\Components\Grid\Grid;
 use PetStore\Services\HomeService;
-use PetStore\Services\PetService;
 use PetStore\Utils\TypeUtils;
 
 final class HomePresenter extends APresenter
@@ -29,18 +30,15 @@ final class HomePresenter extends APresenter
         FORM_INPUT_CREATE_CATEGORY = 'category',
         FORM_INPUT_CREATE_TAGS = 'tags',
         FORM_INPUT_CREATE_STATUS = 'status',
+        FORM_INPUT_CREATE_IMAGES = 'images',
         FORM_SUBMIT_CREATE = 'create';
 
     /**
      * Constructor.
      *
      * @param HomeService $service
-     * @param PetService $petService
      */
-    public function __construct(
-        private readonly HomeService $service,
-        private readonly PetService $petService
-    )
+    public function __construct(private readonly HomeService $service)
     {
         parent::__construct();
     }
@@ -124,12 +122,30 @@ final class HomePresenter extends APresenter
         $form->addText(self::FORM_INPUT_CREATE_CATEGORY, 'Category');
         $form->addText(self::FORM_INPUT_CREATE_TAGS, 'Tags');
         $form->addText(self::FORM_INPUT_CREATE_STATUS, 'Status');
-
-        $form ->addSubmit(self::FORM_SUBMIT_CREATE, 'Create');
+        $form->addMultiUpload(self::FORM_INPUT_CREATE_IMAGES, 'Images')
+            ->setHtmlAttribute('accept', 'image/*');
+        $form->addSubmit(self::FORM_SUBMIT_CREATE, 'Create');
 
         $form->onSuccess[] = function (Form $form, ArrayHash $values): void
         {
-            //$result = $this->service->createPet($values);
+            $result = $this->service->createPet($values);
+            $result->match(
+                success: fn (Pet $pet) => $this->flashMessageInfo('Pet was created'),
+                failure: function (HomeActionCreateErrorResult $errorResult) use ($form): void
+                {
+                    match ($errorResult)
+                    {
+                        HomeActionCreateErrorResult::CATEGORY_NOT_FOUND => $this->flashMessageWarning('Category not found'),
+                        HomeActionCreateErrorResult::TAG_NOT_FOUND => $this->flashMessageWarning('Tag not found'),
+                        HomeActionCreateErrorResult::INVALID_INPUT  => $this->flashMessageWarning('Invalid values supplied'),
+                        HomeActionCreateErrorResult::INTERNAL_SERVER_ERROR => $this->flashMessageError('Something went wrong'),
+                    };
+
+                    $form->addError('Failed to create pet');
+                }
+            );
+
+            $this->redirect('Home:default');
         };
 
         $form->onValidate[] = function (Form $form, ArrayHash $values): void
