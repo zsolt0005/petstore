@@ -3,7 +3,9 @@
 namespace PetStore\Services;
 
 use Nette\Http\FileUpload;
+use Nette\IOException;
 use Nette\Utils\Arrays;
+use Nette\Utils\FileSystem;
 use PetStore\Data\FileUploadResponse;
 use PetStore\Data\Pet;
 use PetStore\Data\Result;
@@ -197,6 +199,17 @@ final readonly class PetService
         }
 
         $this->repository->deleteById($id);
+
+        try
+        {
+            FileSystem::delete($this->getImagesPath($id));
+        }
+        catch (IOException $e)
+        {
+            Debugger::log($e, Debugger::ERROR);
+            return false;
+        }
+
         return true;
     }
 
@@ -335,11 +348,23 @@ final readonly class PetService
      */
     private function getNextImagePath(Pet $pet, FileUpload $file): string
     {
-        $basePath = $this->pathProvider->petImagePath;
+        $imagesPath = $this->getImagesPath($pet->id);
 
         $fileName = count($pet->photoUrls) + 1;
         $fileExtension = $file->getSuggestedExtension();
 
-        return $basePath . '/' . $pet->id . '/' . $fileName . '.' . $fileExtension;
+        return $imagesPath . '/' . $fileName . '.' . $fileExtension;
+    }
+
+    /**
+     * Gets the path of the images saved for a given pet.
+     *
+     * @param int $petId
+     *
+     * @return string
+     */
+    private function getImagesPath(int $petId): string
+    {
+        return $this->pathProvider->petImagePath . '/' . $petId;
     }
 }
