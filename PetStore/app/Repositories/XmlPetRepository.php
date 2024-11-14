@@ -50,7 +50,8 @@ final class XmlPetRepository extends AXmlRepository implements IPetRepository
         // Generate a new ID if not supplied
         if($data->id === 0)
         {
-            $data->id = Arrays::last($this->data)->id + 1;
+            $lastPetId = Arrays::last($this->data)->id ?? 0;
+            $data->id = $lastPetId + 1;
         }
 
         $this->data[] = $data;

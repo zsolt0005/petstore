@@ -2,6 +2,7 @@
 
 namespace PetStore\Presenters\Home;
 
+use InvalidArgumentException;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -86,6 +87,7 @@ final class HomePresenter extends APresenter
      *
      * @return void
      * @throws AbortException
+     * @throws InvalidArgumentException
      */
     public function actionDelete(int $id): void
     {
@@ -139,6 +141,7 @@ final class HomePresenter extends APresenter
                         HomeActionCreateErrorResult::TAG_NOT_FOUND => $this->flashMessageWarning('Tag not found'),
                         HomeActionCreateErrorResult::INVALID_INPUT => $this->flashMessageWarning('Invalid values supplied'),
                         HomeActionCreateErrorResult::INTERNAL_SERVER_ERROR => $this->flashMessageError('Something went wrong'),
+                        default => null
                     };
 
                     // Special case where pet was created by the iamges were failed to upload

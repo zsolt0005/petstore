@@ -5,6 +5,7 @@ namespace PetStore\Services;
 use InvalidArgumentException;
 use Nette\Application\LinkGenerator;
 use Nette\Application\UI\InvalidLinkException;
+use Nette\Http\FileUpload;
 use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Arrays;
@@ -21,6 +22,7 @@ use PetStore\Presenters\Components\Grid\Data\GridData;
 use PetStore\Presenters\Home\HomePresenter;
 use PetStore\SDK\Exceptions\RequestException;
 use PetStore\SDK\PetStoreSdk;
+use PetStore\Utils\TypeUtils;
 
 /**
  * Class HomeService
@@ -37,13 +39,11 @@ final readonly class HomeService
      * @param LinkGenerator $linkGenerator
      * @param CategoryService $categoryService
      * @param TagService $tagService
-     * @param PetService $petService
      */
     public function __construct(
         private LinkGenerator $linkGenerator,
         private CategoryService $categoryService,
-        private TagService $tagService,
-        private PetService $petService
+        private TagService $tagService
     )
     {
     }
@@ -147,10 +147,12 @@ final readonly class HomeService
      */
     public function createPet(ArrayHash $values): Result
     {
-        $name = $values[HomePresenter::FORM_INPUT_CREATE_NAME];
-        $categoryName = $values[HomePresenter::FORM_INPUT_CREATE_CATEGORY];
-        $tagNames = $values[HomePresenter::FORM_INPUT_CREATE_TAGS];
-        $status = $values[HomePresenter::FORM_INPUT_CREATE_STATUS];
+        $name = TypeUtils::convertToString($values[HomePresenter::FORM_INPUT_CREATE_NAME]) ?? '';
+        $categoryName = TypeUtils::convertToString($values[HomePresenter::FORM_INPUT_CREATE_CATEGORY]) ?? '';
+        $tagNames = TypeUtils::convertToString($values[HomePresenter::FORM_INPUT_CREATE_TAGS]) ?? '';
+        $status = TypeUtils::convertToString($values[HomePresenter::FORM_INPUT_CREATE_STATUS]) ?? '';
+
+        /** @var FileUpload[] $images */
         $images = $values[HomePresenter::FORM_INPUT_CREATE_IMAGES];
 
         $category = $this->categoryService->findByName($categoryName);

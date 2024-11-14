@@ -5,6 +5,8 @@ parameters:
     check:
       tooWideThrowType: true
       missingCheckedExceptionInThrows: true
+    uncheckedExceptionRegexes:
+      - '#^TypeError$#'
 
 includes:
     - phpstan-baseline.neon

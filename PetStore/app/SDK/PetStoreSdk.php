@@ -260,10 +260,10 @@ final class PetStoreSdk
      * @param string $endpoint
      * @param array<string, mixed> $options
      *
-     * @return ResponseInterface|null
+     * @return ResponseInterface
      * @throws SDKRequestException
      */
-    private function makeRequest(string $method, string $endpoint, array $options = []): ?ResponseInterface
+    private function makeRequest(string $method, string $endpoint, array $options = []): ResponseInterface
     {
         $endpointToCall = self::BASE_API_PATH . (str_starts_with($endpoint, '/') ? '' : '/') . $endpoint;
 
@@ -277,7 +277,7 @@ final class PetStoreSdk
         }
         catch(Throwable $e)
         {
-            return null;
+            throw new SDKRequestException($e->getCode());
         }
 
         if($response?->getStatusCode() !== 200)
