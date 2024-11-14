@@ -24,7 +24,7 @@ abstract class APresenter extends Presenter
      */
     protected function flashMessageInfo(string $message): void
     {
-        $this->flashMessage($message, 'light');
+        $this->flashMessage($message, 'info');
     }
 
     /**

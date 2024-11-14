@@ -9,7 +9,9 @@ use InvalidArgumentException;
 use JsonException;
 use JsonMapper;
 use JsonMapper_Exception;
+use Nette\Http\FileUpload;
 use Nette\Utils\Json;
+use PetStore\Data\FileUploadResponse;
 use PetStore\Data\Pet;
 use PetStore\SDK\Exceptions\RequestException as SDKRequestException;
 use Psr\Http\Message\ResponseInterface;
@@ -141,6 +143,32 @@ final class PetStoreSdk
     {
         return $this->makeRequestAndParseObjectResponse(Pet::class, self::POST, '/pet', [
             RequestOptions::JSON => $pet
+        ]);
+    }
+
+    /**
+     * Upload images to a pet.
+     *
+     * @param Pet $pet
+     * @param FileUpload[] $files
+     *
+     * @return void
+     * @throws SDKRequestException
+     */
+    public function uploadImages(Pet $pet, array $files): void
+    {
+        $filesToUpload = [];
+        foreach ($files as $file)
+        {
+            $filesToUpload[] = [
+                'name'     => $file->getUntrustedName(),
+                'contents' => $file->getContents(),
+                'filename' => $file->getUntrustedName()
+            ];
+        }
+
+        $this->makeRequest(self::POST, 'pet/' . $pet->id . '/uploadImage', [
+            RequestOptions::MULTIPART => $filesToUpload
         ]);
     }
 

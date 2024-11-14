@@ -32,6 +32,7 @@ Spustíme script `run-integration-tests.ps1` ktorý spustí web server, vykoná 
 # Reasoning
 TODO
 
+
 # Rozšírenie Pet o ďalší stĺpec
 TODO
 
@@ -45,5 +46,3 @@ TODO
           - Formular so všetkými data
         - Quick Update
           - Formulár s name a status
-  - Add pet
-    - Formulár so všetkými data

@@ -12,6 +12,7 @@ use PetStore\Data\HomeFilterData;
 use PetStore\Data\Pet;
 use PetStore\Data\Result;
 use PetStore\Data\Tag;
+use PetStore\Enums\HomeActionCreateErrorResult;
 use PetStore\Enums\HomeActionDefaultErrorResult;
 use PetStore\Enums\HomeActionDeleteErrorResult;
 use PetStore\Presenters\Components\Grid\Builders\GridDataBuilder;
@@ -68,10 +69,10 @@ final readonly class HomeService
         {
             $pets = match (true)
             {
-                $filterData?->id !== null => [PetStoreSdk::create()->getById($filterData->id)],
-                $filterData?->status !== null => PetStoreSdk::create()->findByStatus($filterData->status),
-                $filterData?->tags !== null => PetStoreSdk::create()->findByTags($filterData->tags),
-                default => PetStoreSdk::create()->getAll(),
+                $filterData?->id !== null => [PetStoreSdk::createInstance()->getById($filterData->id)],
+                $filterData?->status !== null => PetStoreSdk::createInstance()->findByStatus($filterData->status),
+                $filterData?->tags !== null => PetStoreSdk::createInstance()->findByTags($filterData->tags),
+                default => PetStoreSdk::createInstance()->getAll(),
             };
 
             if(empty($pets))
@@ -124,7 +125,7 @@ final readonly class HomeService
     {
         try
         {
-            PetStoreSdk::create()->deleteById($id);
+            PetStoreSdk::createInstance()->deleteById($id);
             return Result::of(success: $id);
         }
         catch (RequestException $e)
@@ -142,7 +143,7 @@ final readonly class HomeService
      *
      * @param ArrayHash<string> $values
      *
-     * @return Result
+     * @return Result<HomeActionCreateErrorResult, Pet>
      */
     public function createPet(ArrayHash $values): Result
     {
@@ -150,11 +151,12 @@ final readonly class HomeService
         $categoryName = $values[HomePresenter::FORM_INPUT_CREATE_CATEGORY];
         $tagNames = $values[HomePresenter::FORM_INPUT_CREATE_TAGS];
         $status = $values[HomePresenter::FORM_INPUT_CREATE_STATUS];
+        $images = $values[HomePresenter::FORM_INPUT_CREATE_IMAGES];
 
         $category = $this->categoryService->findByName($categoryName);
         if($category === null)
         {
-            //$this->flashMessage('Category ' . $category . ' doesn\'t exist');
+            return Result::of(failure: HomeActionCreateErrorResult::CATEGORY_NOT_FOUND);
         }
 
         $tagNames = explode(',', str_replace(' ', '', $tagNames));
@@ -164,7 +166,7 @@ final readonly class HomeService
             $tag = $this->tagService->findByName($tagName);
             if($tag === null)
             {
-                //$this->flashMessage('Tag ' . $tag . ' does not exist');
+                return Result::of(failure: HomeActionCreateErrorResult::TAG_NOT_FOUND);
             }
 
             $tags[] = $tag;
@@ -176,8 +178,43 @@ final readonly class HomeService
         $pet->tags = $tags;
         $pet->status = $status;
 
-        $result = $this->petService->create($pet);
+        $sdk = PetStoreSdk::createInstance();
 
-        return Result::of();
+        try
+        {
+            $createdPet = $sdk->create($pet);
+        }
+        catch (RequestException $e)
+        {
+            return match ($e->getCode())
+            {
+                IResponse::S405_MethodNotAllowed, IResponse::S400_BadRequest => Result::of(failure: HomeActionCreateErrorResult::INVALID_INPUT),
+                default => Result::of(failure: HomeActionDefaultErrorResult::INTERNAL_SERVER_ERROR)
+            };
+        }
+        catch (InvalidArgumentException)
+        {
+            return Result::of(failure: HomeActionCreateErrorResult::INTERNAL_SERVER_ERROR);
+        }
+
+        if(count($images) === 0)
+        {
+            return Result::of(success: $createdPet);
+        }
+
+        try
+        {
+            $sdk->uploadImages($createdPet, $images);
+        }
+        catch (RequestException $e)
+        {
+            return match ($e->getCode())
+            {
+                IResponse::S400_BadRequest => Result::of(failure: HomeActionCreateErrorResult::INVALID_IMAGE_FILE),
+                default => Result::of(failure: HomeActionDefaultErrorResult::INTERNAL_SERVER_ERROR)
+            };
+        }
+
+        return Result::of(success: $createdPet);
     }
 }

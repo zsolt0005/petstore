@@ -137,9 +137,17 @@ final class HomePresenter extends APresenter
                     {
                         HomeActionCreateErrorResult::CATEGORY_NOT_FOUND => $this->flashMessageWarning('Category not found'),
                         HomeActionCreateErrorResult::TAG_NOT_FOUND => $this->flashMessageWarning('Tag not found'),
-                        HomeActionCreateErrorResult::INVALID_INPUT  => $this->flashMessageWarning('Invalid values supplied'),
+                        HomeActionCreateErrorResult::INVALID_INPUT => $this->flashMessageWarning('Invalid values supplied'),
                         HomeActionCreateErrorResult::INTERNAL_SERVER_ERROR => $this->flashMessageError('Something went wrong'),
                     };
+
+                    // Special case where pet was created by the iamges were failed to upload
+                    if($errorResult == HomeActionCreateErrorResult::INVALID_IMAGE_FILE)
+                    {
+                        $this->flashMessageInfo('Pet was created');
+                        $this->flashMessageWarning('Failed to upload pet images due to an invalid image file');
+                        return;
+                    }
 
                     $form->addError('Failed to create pet');
                 }
