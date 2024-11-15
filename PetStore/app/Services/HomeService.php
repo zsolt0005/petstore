@@ -16,6 +16,7 @@ use PetStore\Data\Tag;
 use PetStore\Enums\HomeActionCreateErrorResult;
 use PetStore\Enums\HomeActionDefaultErrorResult;
 use PetStore\Enums\HomeActionDeleteErrorResult;
+use PetStore\Enums\HomeActionUpdateErrorResult;
 use PetStore\Presenters\Components\Grid\Builders\GridDataBuilder;
 use PetStore\Presenters\Components\Grid\Data\GridColumnActionData;
 use PetStore\Presenters\Components\Grid\Data\GridData;
@@ -85,6 +86,7 @@ final readonly class HomeService
                 $tags = Arrays::map($pet->tags, static fn(Tag $tag) => $tag->name);
 
                 $actions = [
+                    GridColumnActionData::create('edit', 'Edit', $this->linkGenerator->link('Home:edit', ['id' => $pet->id]), 'btn-info'),
                     GridColumnActionData::create('delete', 'Delete', $this->linkGenerator->link('Home:delete', ['id' => $pet->id]), 'btn-danger')
                 ];
 
@@ -218,5 +220,32 @@ final readonly class HomeService
         }
 
         return Result::of(success: $createdPet);
+    }
+
+    /**
+     * Gets a pet by its ID.
+     *
+     * @param int $id
+     *
+     * @return Result<HomeActionUpdateErrorResult, Pet>
+     */
+    public function getById(int $id): Result
+    {
+        try
+        {
+            return Result::of(success: PetStoreSdk::createInstance()->getById($id));
+        }
+        catch (RequestException $e)
+        {
+            return match ($e->getCode())
+            {
+                IResponse::S400_BadRequest, IResponse::S404_NotFound => Result::of(failure: HomeActionUpdateErrorResult::PET_NOT_FOUND),
+                default => Result::of(failure: HomeActionUpdateErrorResult::INTERNAL_SERVER_ERROR)
+            };
+        }
+        catch (InvalidArgumentException | InvalidLinkException $e)
+        {
+            return Result::of(failure: HomeActionUpdateErrorResult::INTERNAL_SERVER_ERROR);
+        }
     }
 }

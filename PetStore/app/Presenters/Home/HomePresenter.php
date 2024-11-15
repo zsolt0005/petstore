@@ -11,6 +11,7 @@ use PetStore\Data\Pet;
 use PetStore\Enums\HomeActionCreateErrorResult;
 use PetStore\Enums\HomeActionDefaultErrorResult;
 use PetStore\Enums\HomeActionDeleteErrorResult;
+use PetStore\Enums\HomeActionUpdateErrorResult;
 use PetStore\Presenters\APresenter;
 use PetStore\Presenters\Components\Grid\Data\GridData;
 use PetStore\Presenters\Components\Grid\Grid;
@@ -102,6 +103,35 @@ final class HomePresenter extends APresenter
     }
 
     /**
+     * Action: Edit.
+     *
+     * @param int $id
+     *
+     * @return void
+     * @throws AbortException
+     */
+    public function actionEdit(int $id): void
+    {
+        $result = $this->service->getById($id);
+        $pet = $result->match(
+            success: fn (Pet $pet) => $pet,
+            failure: function (HomeActionUpdateErrorResult $errorResult) use ($id): never
+            {
+                match ($errorResult)
+                {
+                    HomeActionUpdateErrorResult::PET_NOT_FOUND => $this->flashMessageWarning('Pet with id ' . $id . ' not found'),
+                    default => $this->flashMessageError('Something went wrong'),
+                };
+
+                $this->redirect('Home:default');
+            }
+        );
+
+        $template = $this->getTemplate();
+        $template->pet = $pet;
+    }
+
+    /**
      * Creates the grid component.
      *
      * @return Grid
@@ -128,61 +158,80 @@ final class HomePresenter extends APresenter
             ->setHtmlAttribute('accept', 'image/*');
         $form->addSubmit(self::FORM_SUBMIT_CREATE, 'Create');
 
-        $form->onSuccess[] = function (Form $form, ArrayHash $values): void
-        {
-            $result = $this->service->createPet($values);
-            $result->match(
-                success: fn (Pet $pet) => $this->flashMessageInfo('Pet was created'),
-                failure: function (HomeActionCreateErrorResult $errorResult) use ($form): void
-                {
-                    match ($errorResult)
-                    {
-                        HomeActionCreateErrorResult::CATEGORY_NOT_FOUND => $this->flashMessageWarning('Category not found'),
-                        HomeActionCreateErrorResult::TAG_NOT_FOUND => $this->flashMessageWarning('Tag not found'),
-                        HomeActionCreateErrorResult::INVALID_INPUT => $this->flashMessageWarning('Invalid values supplied'),
-                        HomeActionCreateErrorResult::INTERNAL_SERVER_ERROR => $this->flashMessageError('Something went wrong'),
-                        default => null
-                    };
-
-                    // Special case where pet was created by the iamges were failed to upload
-                    if($errorResult == HomeActionCreateErrorResult::INVALID_IMAGE_FILE)
-                    {
-                        $this->flashMessageInfo('Pet was created');
-                        $this->flashMessageWarning('Failed to upload pet images due to an invalid image file');
-                        return;
-                    }
-
-                    $form->addError('Failed to create pet');
-                }
-            );
-
-            $this->redirect('Home:default');
-        };
-
-        $form->onValidate[] = function (Form $form, ArrayHash $values): void
-        {
-            if(empty($values[self::FORM_INPUT_CREATE_NAME]))
-            {
-                $form[self::FORM_INPUT_CREATE_NAME]->addError('Pet name cannot be empty');
-            }
-
-            if(empty($values[self::FORM_INPUT_CREATE_CATEGORY]))
-            {
-                $form[self::FORM_INPUT_CREATE_CATEGORY]->addError('Category cannot be empty');
-            }
-
-            if(empty($values[self::FORM_INPUT_CREATE_TAGS]))
-            {
-                $form[self::FORM_INPUT_CREATE_TAGS]->addError('Tags cannot be empty');
-            }
-
-            if(empty($values[self::FORM_INPUT_CREATE_STATUS]))
-            {
-                $form[self::FORM_INPUT_CREATE_STATUS]->addError('Status cannot be empty');
-            }
-        };
+        $form->onSuccess[] = [$this, 'processCreateForm'];
+        $form->onValidate[] = [$this, 'validateCreateForm'];
 
         return $form;
+    }
+
+    /**
+     * Validates the create form.
+     *
+     * @param Form $form
+     * @param ArrayHash<string> $values
+     *
+     * @return void
+     */
+    public function validateCreateForm(Form $form, ArrayHash $values): void
+    {
+        if(empty($values[self::FORM_INPUT_CREATE_NAME]))
+        {
+            $form[self::FORM_INPUT_CREATE_NAME]->addError('Pet name cannot be empty');
+        }
+
+        if(empty($values[self::FORM_INPUT_CREATE_CATEGORY]))
+        {
+            $form[self::FORM_INPUT_CREATE_CATEGORY]->addError('Category cannot be empty');
+        }
+
+        if(empty($values[self::FORM_INPUT_CREATE_TAGS]))
+        {
+            $form[self::FORM_INPUT_CREATE_TAGS]->addError('Tags cannot be empty');
+        }
+
+        if(empty($values[self::FORM_INPUT_CREATE_STATUS]))
+        {
+            $form[self::FORM_INPUT_CREATE_STATUS]->addError('Status cannot be empty');
+        }
+    }
+
+    /**
+     * Processes the create form.
+     *
+     * @param Form $form
+     * @param ArrayHash<string> $values
+     *
+     * @return never
+     */
+    public function processCreateForm(Form $form, ArrayHash $values): never
+    {
+        $result = $this->service->createPet($values);
+        $result->match(
+            success: fn (Pet $pet) => $this->flashMessageInfo('Pet was created'),
+            failure: function (HomeActionCreateErrorResult $errorResult) use ($form): void
+            {
+                match ($errorResult)
+                {
+                    HomeActionCreateErrorResult::CATEGORY_NOT_FOUND => $this->flashMessageWarning('Category not found'),
+                    HomeActionCreateErrorResult::TAG_NOT_FOUND => $this->flashMessageWarning('Tag not found'),
+                    HomeActionCreateErrorResult::INVALID_INPUT => $this->flashMessageWarning('Invalid values supplied'),
+                    HomeActionCreateErrorResult::INTERNAL_SERVER_ERROR => $this->flashMessageError('Something went wrong'),
+                    default => null
+                };
+
+                // Special case where pet was created by the iamges were failed to upload
+                if($errorResult == HomeActionCreateErrorResult::INVALID_IMAGE_FILE)
+                {
+                    $this->flashMessageInfo('Pet was created');
+                    $this->flashMessageWarning('Failed to upload pet images due to an invalid image file');
+                    return;
+                }
+
+                $form->addError('Failed to create pet');
+            }
+        );
+
+        $this->redirect('Home:default');
     }
 
     /**
