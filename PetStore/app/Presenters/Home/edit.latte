@@ -2,9 +2,11 @@
 
 {block content}
 
-<a n:href="Home:default" class="btn btn-outline-light mb-3">Back</a>
+{translator home.edit}
 
-<h2>Editing: <b class="fw-bold text-danger">{$pet->name}</b></h2>
+<a n:href="Home:default" class="btn btn-outline-light mb-3">{_back}</a>
+
+<h2>{_title} <b class="fw-bold text-danger">{$pet->name}</b></h2>
 
 {embed pet-form.latte, form: form}
     {block beforeSubmitContent}
@@ -15,3 +17,5 @@
         </div>
     {/block}
 {/embed}
+
+{/translator}

@@ -1,1 +1,66 @@
-welcome: Welcome!
+default:
+    filterWarning: Only one filter can be active at the same time!
+
+    grid:
+        id: ID
+        name: Name
+        category: Category
+        status: Status
+        tags: Tags
+        actions: Actions
+        create: Create
+
+        filters:
+            byId: Filter by ID
+            byStatus: Filter by Status
+            byTags: 'Filter by Tads (comma separated)'
+            search: Search
+            clear: Clear
+
+    errors:
+        notFound: No pets found
+        invalidFilter: Invalid filter values
+
+delete:
+    success: Pet was deleted
+
+create:
+    back: Back
+    title: Create a new Pet
+    success: Pet was created
+
+edit:
+    back: Back
+    title: 'Editing: '
+    success: Pet was updated
+
+    errors:
+        notFound: 'Pet with id %id% not found'
+
+form:
+    labels:
+        name: Name
+        category: Category
+        tags: Tags
+        status: Status
+
+        images: Images
+        addImages: Add images
+
+        create: Create
+        edit: Edit
+
+    errors:
+        categoryNotFound: Category not found
+        tagNotFound: Tag not found
+        invalidValues: Invalid values supplied
+        failedToUploadImages: Failed to upload pet images due to an invalid image file
+
+        validation:
+            nameEmpty: Pet name cannot be empty
+            categoryEmpty: Category cannot be empty
+            tagEmpty: Tags cannot be empty
+            statusEmpty: Status cannot be empty
+
+errors:
+    general: 'Something went wrong'

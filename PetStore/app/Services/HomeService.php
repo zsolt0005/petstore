@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use Nette\Application\LinkGenerator;
 use Nette\Application\UI\InvalidLinkException;
 use Nette\Http\IResponse;
+use Nette\Localization\ITranslator;
 use PetStore\Data\HomeFilterData;
 use PetStore\Data\Pet;
 use PetStore\Data\PetFormData;
@@ -32,11 +33,13 @@ final readonly class HomeService
     /**
      * Constructor.
      *
+     * @param ITranslator $translator
      * @param LinkGenerator $linkGenerator
      * @param CategoryService $categoryService
      * @param TagService $tagService
      */
     public function __construct(
+        private ITranslator $translator,
         private LinkGenerator $linkGenerator,
         private CategoryService $categoryService,
         private TagService $tagService
@@ -54,12 +57,12 @@ final readonly class HomeService
     public function prepareGridData(?HomeFilterData $filterData): Result
     {
         $dataBuilder = GridDataBuilder::create()
-            ->addHeader('ID')
-            ->addHeader('Name')
-            ->addHeader('Category')
-            ->addHeader('Status')
-            ->addHeader('Tags')
-            ->addHeader('Actions');
+            ->addHeader($this->translator->translate('home.default.grid.id'))
+            ->addHeader($this->translator->translate('home.default.grid.name'))
+            ->addHeader($this->translator->translate('home.default.grid.category'))
+            ->addHeader($this->translator->translate('home.default.grid.status'))
+            ->addHeader($this->translator->translate('home.default.grid.tags'))
+            ->addHeader($this->translator->translate('home.default.grid.actions'));
 
         try
         {

@@ -3,25 +3,27 @@
 
 {block content}
 
+{translator home.default}
+
 <div>
-    <p class="text-danger fw-bold">Only one filter can be active at the same time!</p>
+    <p class="text-danger fw-bold">{_filterWarning}</p>
 </div>
 <div class="row">
     <form class="col row" method="GET">
         <div class="col">
-            <input type="text" class="form-control {$fitlerData?->id !== null ? 'border-success' : ''}" placeholder="Filter by ID"
+            <input type="text" class="form-control {$fitlerData?->id !== null ? 'border-success' : ''}" placeholder="{_grid.filters.byId}"
                    name="{PetStore\Presenters\Home\HomePresenter::QUERY_FILTER_BY_ID}"
                    value="{$fitlerData?->id}">
         </div>
 
         <div class="col">
-            <input type="text" class="form-control {$fitlerData?->status !== null ? 'border-success' : ''}" placeholder="Filter by Status"
+            <input type="text" class="form-control {$fitlerData?->status !== null ? 'border-success' : ''}" placeholder="{_grid.filters.byStatus}"
                    name="{PetStore\Presenters\Home\HomePresenter::QUERY_FILTER_BY_STATUS}"
                    value="{$fitlerData?->status}">
         </div>
 
         <div class="col">
-            <input type="text" class="form-control {$fitlerData?->tags !== null ? 'border-success' : ''}" placeholder="Filter by Tags (comma separated)"
+            <input type="text" class="form-control {$fitlerData?->tags !== null ? 'border-success' : ''}" placeholder="{_grid.filters.byTags}"
                    name="{PetStore\Presenters\Home\HomePresenter::QUERY_FILTER_BY_TAGS}"
                    value="{$fitlerData?->tags}">
         </div>
@@ -29,11 +31,11 @@
         <div class="col-auto">
             <div class="row">
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button type="submit" class="btn btn-primary">{_grid.filters.search}</button>
                 </div>
                 <div class="col-auto">
                     {if $fitlerData !== null}
-                        <a class="btn btn-danger" href="{link Home:default}">Clear</a>
+                        <a class="btn btn-danger" href="{link Home:default}">{_grid.filters.clear}</a>
                     {/if}
                 </div>
             </div>
@@ -41,10 +43,12 @@
     </form>
 
     <div class="col-auto ms-5">
-        <a href="{link Home:create}" class="btn btn-success">Create</a>
+        <a href="{link Home:create}" class="btn btn-success">{_grid.create}</a>
     </div>
 </div>
 
 <div class="mt-4">
     {control grid $gridData}
 </div>
+
+{/translator}

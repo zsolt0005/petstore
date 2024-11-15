@@ -1,7 +1,11 @@
 {block content}
 
-<a n:href="Home:default" class="btn btn-outline-light mb-3">Back</a>
+{translator home.create}
 
-<h2>Create a new Pet</h2>
+<a n:href="Home:default" class="btn btn-outline-light mb-3">{_back}</a>
+
+<h2>{_title}</h2>
 
 {include pet-form.latte, form: form}
+
+{/translator}

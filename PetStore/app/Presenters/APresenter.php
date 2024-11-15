@@ -2,9 +2,7 @@
 
 namespace PetStore\Presenters;
 
-use Exception;
 use Nette\Application\UI\Presenter;
-use Nette\ComponentModel\IComponent;
 use Nette\Localization\ITranslator;
 
 /**
@@ -35,57 +33,38 @@ abstract class APresenter extends Presenter
      * Adds a flash message of type Info.
      *
      * @param string $message
+     * @param array<string, mixed> $params
      *
      * @return void
      */
-    protected function flashMessageInfo(string $message): void
+    protected function flashMessageInfo(string $message, array $params = []): void
     {
-        $this->flashMessage($message, 'info');
+        $this->flashMessage($this->translator->translate($message, $params), 'info');
     }
 
     /**
      * Adds a flash message of type Warning.
      *
      * @param string $message
+     * @param array<string, mixed> $params
      *
      * @return void
      */
-    protected function flashMessageWarning(string $message): void
+    protected function flashMessageWarning(string $message, array $params = []): void
     {
-        $this->flashMessage($message, 'warning');
+        $this->flashMessage($this->translator->translate($message, $params), 'warning');
     }
 
     /**
      * Adds a flash message of type Error.
      *
      * @param string $message
+     * @param array<string, mixed> $params
      *
      * @return void
      */
-    protected function flashMessageError(string $message): void
+    protected function flashMessageError(string $message, array $params = []): void
     {
-        $this->flashMessage($message, 'danger');
-    }
-
-    /**
-     *
-     * @template T of IComponent
-     *
-     * @param string $name
-     * @param class-string<T> $type
-     *
-     * @return T
-     */
-    protected function getTypedComponent(string $name, string $type): ?IComponent
-    {
-        try
-        {
-            $component = $this->getComponent($name);
-            return get_class($component) === $type ? $component : null;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
+        $this->flashMessage($this->translator->translate($message, $params), 'danger');
     }
 }

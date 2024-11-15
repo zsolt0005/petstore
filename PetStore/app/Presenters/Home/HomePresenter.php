@@ -68,9 +68,9 @@ final class HomePresenter extends APresenter
             {
                 match ($error)
                 {
-                    HomeActionDefaultErrorResult::NOT_FOUND => $this->flashMessageWarning('No pets found'),
-                    HomeActionDefaultErrorResult::INVALID_FILTER_VALUE => $this->flashMessageWarning('Invalid filter value'),
-                    HomeActionDefaultErrorResult::INTERNAL_SERVER_ERROR => $this->flashMessageError('Something went wrong'),
+                    HomeActionDefaultErrorResult::NOT_FOUND => $this->flashMessageWarning('home.default.errors.notFound'),
+                    HomeActionDefaultErrorResult::INVALID_FILTER_VALUE => $this->flashMessageWarning('home.default.errors.invalidFilter'),
+                    HomeActionDefaultErrorResult::INTERNAL_SERVER_ERROR => $this->flashMessageError('home.errors.general'),
                     null => null
                 };
             }
@@ -91,8 +91,8 @@ final class HomePresenter extends APresenter
         $result = $this->service->deleteById($id);
 
         $result->match(
-            success: fn () => $this->flashMessageInfo('Pet was deleted'),
-            failure: fn (HomeActionDeleteErrorResult $errorResult) => $this->flashMessageError('Something went wrong')
+            success: fn () => $this->flashMessageInfo('home.delete.success'),
+            failure: fn (HomeActionDeleteErrorResult $errorResult) => $this->flashMessageError('home.errors.general')
         );
 
         $this->redirect('Home:default');
@@ -116,8 +116,8 @@ final class HomePresenter extends APresenter
             {
                 match ($errorResult)
                 {
-                    HomeActionUpdateErrorResult::PET_NOT_FOUND => $this->flashMessageWarning('Pet with id ' . $id . ' not found'),
-                    default => $this->flashMessageError('Something went wrong'),
+                    HomeActionUpdateErrorResult::PET_NOT_FOUND => $this->flashMessageWarning('home.edit.errors.notFound', ['id' => $id]),
+                    default => $this->flashMessageError('home.errors.general'),
                 };
 
                 $this->redirect('Home:default');
@@ -148,16 +148,21 @@ final class HomePresenter extends APresenter
     {
         $form = new Form();
 
-        $imagesLabel = $this->pet === null ? 'Images' : 'Add images';
-        $submitButtonCaption = $this->pet === null ? 'Create' : 'Edit';
+        $imagesLabel = $this->pet === null
+            ? $this->translator->translate('home.form.labels.images')
+            : $this->translator->translate('home.form.labels.addImages');
 
-        $form->addText(self::FORM_INPUT_CREATE_NAME, 'Name')
+        $submitButtonCaption = $this->pet === null
+            ? $this->translator->translate('home.form.labels.create')
+            : $this->translator->translate('home.form.labels.edit');
+
+        $form->addText(self::FORM_INPUT_CREATE_NAME, $this->translator->translate('home.form.labels.name'))
             ->setDefaultValue($this->pet?->name);
-        $form->addText(self::FORM_INPUT_CREATE_CATEGORY, 'Category')
+        $form->addText(self::FORM_INPUT_CREATE_CATEGORY, $this->translator->translate('home.form.labels.category'))
             ->setDefaultValue($this->pet?->category?->name);
-        $form->addText(self::FORM_INPUT_CREATE_TAGS, 'Tags')
+        $form->addText(self::FORM_INPUT_CREATE_TAGS, $this->translator->translate('home.form.labels.tags'))
             ->setDefaultValue($this->pet?->getTagNames(', '));
-        $form->addText(self::FORM_INPUT_CREATE_STATUS, 'Status')
+        $form->addText(self::FORM_INPUT_CREATE_STATUS, $this->translator->translate('home.form.labels.status'))
             ->setDefaultValue($this->pet?->status);
         $form->addMultiUpload(self::FORM_INPUT_CREATE_IMAGES, $imagesLabel)
             ->setHtmlAttribute('accept', 'image/*');
@@ -189,22 +194,22 @@ final class HomePresenter extends APresenter
     {
         if(empty($data->name))
         {
-            $form[self::FORM_INPUT_CREATE_NAME]->addError('Pet name cannot be empty');
+            $form[self::FORM_INPUT_CREATE_NAME]->addError($this->translator->translate('home.form.errors.validation.nameEmpty'));
         }
 
         if(empty($data->category))
         {
-            $form[self::FORM_INPUT_CREATE_CATEGORY]->addError('Category cannot be empty');
+            $form[self::FORM_INPUT_CREATE_CATEGORY]->addError($this->translator->translate('home.form.errors.validation.categoryEmpty'));
         }
 
         if(empty($data->tags))
         {
-            $form[self::FORM_INPUT_CREATE_TAGS]->addError('Tags cannot be empty');
+            $form[self::FORM_INPUT_CREATE_TAGS]->addError($this->translator->translate('home.form.errors.validation.tagEmpty'));
         }
 
         if(empty($data->status))
         {
-            $form[self::FORM_INPUT_CREATE_STATUS]->addError('Status cannot be empty');
+            $form[self::FORM_INPUT_CREATE_STATUS]->addError($this->translator->translate('home.form.errors.validation.statusEmpty'));
         }
     }
 
@@ -222,23 +227,23 @@ final class HomePresenter extends APresenter
     {
         $result = $this->service->createPet($data);
         $result->match(
-            success: fn (Pet $pet) => $this->flashMessageInfo('Pet was created'),
+            success: fn (Pet $pet) => $this->flashMessageInfo('home.create.success'),
             failure: function (HomeActionCreateErrorResult $errorResult) use ($form): void
             {
                 match ($errorResult)
                 {
-                    HomeActionCreateErrorResult::CATEGORY_NOT_FOUND => $this->flashMessageWarning('Category not found'),
-                    HomeActionCreateErrorResult::TAG_NOT_FOUND => $this->flashMessageWarning('Tag not found'),
-                    HomeActionCreateErrorResult::INVALID_INPUT => $this->flashMessageWarning('Invalid values supplied'),
-                    HomeActionCreateErrorResult::INTERNAL_SERVER_ERROR => $this->flashMessageError('Something went wrong'),
+                    HomeActionCreateErrorResult::CATEGORY_NOT_FOUND => $this->flashMessageWarning('home.form.errors.categoryNotFound'),
+                    HomeActionCreateErrorResult::TAG_NOT_FOUND => $this->flashMessageWarning('home.form.errors.tagNotFound'),
+                    HomeActionCreateErrorResult::INVALID_INPUT => $this->flashMessageWarning('home.form.errors.invalidValues'),
+                    HomeActionCreateErrorResult::INTERNAL_SERVER_ERROR => $this->flashMessageError('home.errors.general'),
                     default => null
                 };
 
                 // Special case where pet was created by the iamges were failed to upload
                 if($errorResult == HomeActionCreateErrorResult::INVALID_IMAGE_FILE)
                 {
-                    $this->flashMessageInfo('Pet was created');
-                    $this->flashMessageWarning('Failed to upload pet images due to an invalid image file');
+                    $this->flashMessageInfo('home.create.success');
+                    $this->flashMessageWarning('home.form.errors.failedToUploadImages');
                     return;
                 }
 
@@ -264,29 +269,29 @@ final class HomePresenter extends APresenter
         // This should never happen
         if($this->pet === null)
         {
-            $this->flashMessageError('Something went wrong');
+            $this->flashMessageError('home.errors.general');
             $this->redirect('Home:default');
         }
 
         $result = $this->service->updatePet($this->pet, $data);
         $result->match(
-            success: fn (Pet $pet) => $this->flashMessageInfo('Pet was updated'),
+            success: fn (Pet $pet) => $this->flashMessageInfo('home.edit.success'),
             failure: function (HomeActionCreateErrorResult $errorResult) use ($form): void
             {
                 match ($errorResult)
                 {
-                    HomeActionCreateErrorResult::CATEGORY_NOT_FOUND => $this->flashMessageWarning('Category not found'),
-                    HomeActionCreateErrorResult::TAG_NOT_FOUND => $this->flashMessageWarning('Tag not found'),
-                    HomeActionCreateErrorResult::INVALID_INPUT => $this->flashMessageWarning('Invalid values supplied'),
-                    HomeActionCreateErrorResult::INTERNAL_SERVER_ERROR => $this->flashMessageError('Something went wrong'),
+                    HomeActionCreateErrorResult::CATEGORY_NOT_FOUND => $this->flashMessageWarning('home.form.errors.categoryNotFound'),
+                    HomeActionCreateErrorResult::TAG_NOT_FOUND => $this->flashMessageWarning('home.form.errors.tagNotFound'),
+                    HomeActionCreateErrorResult::INVALID_INPUT => $this->flashMessageWarning('home.form.errors.invalidValues'),
+                    HomeActionCreateErrorResult::INTERNAL_SERVER_ERROR => $this->flashMessageError('home.errors.general'),
                     default => null
                 };
 
                 // Special case where pet was created by the iamges were failed to upload
                 if($errorResult == HomeActionCreateErrorResult::INVALID_IMAGE_FILE)
                 {
-                    $this->flashMessageInfo('Pet was updated');
-                    $this->flashMessageWarning('Failed to upload pet images due to an invalid image file');
+                    $this->flashMessageInfo('home.edit.success');
+                    $this->flashMessageWarning('home.form.errors.failedToUploadImages');
                     return;
                 }
 
