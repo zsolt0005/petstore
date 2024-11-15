@@ -5,6 +5,7 @@ namespace PetStore\Presenters;
 use Exception;
 use Nette\Application\UI\Presenter;
 use Nette\ComponentModel\IComponent;
+use Nette\Localization\ITranslator;
 
 /**
  * Class APresenter
@@ -15,6 +16,21 @@ use Nette\ComponentModel\IComponent;
  */
 abstract class APresenter extends Presenter
 {
+    /** @var ITranslator @inject */
+    public ITranslator $translator;
+
+    /**
+     * Injects the translator.
+     *
+     * @param ITranslator $translator
+     *
+     * @return void
+     */
+    public function injectTranslator(ITranslator $translator): void
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * Adds a flash message of type Info.
      *
