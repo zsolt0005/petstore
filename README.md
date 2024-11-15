@@ -35,8 +35,3 @@ TODO
 
 # Rozšírenie Pet o ďalší stĺpec
 TODO
-
-
-
-# TODO
-- Translator
