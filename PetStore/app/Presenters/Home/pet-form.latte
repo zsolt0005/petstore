@@ -1,0 +1,25 @@
+{varType Nette\Forms\Form $form}
+
+<form n:name=$form class="mt-3">
+    <div n:foreach="$form->getControls() as $input" class="mb-3">
+        {varType Nette\ComponentModel\IComponent $input}
+
+        {if $input instanceof Nette\Forms\Controls\TextInput || $input instanceof Nette\Forms\Controls\UploadControl }
+            {label $input, class => ['form-label', 'fw-bold'] /}
+            {input $input, class => ['form-control']}
+            <div n:ifcontent class="form-text text-danger fw-bold">
+                {inputError $input}
+            </div>
+        {/if}
+    </div>
+
+    {block beforeSubmitContent}{/block}
+
+    <div n:foreach="$form->getControls() as $input" class="mb-3">
+        {varType Nette\ComponentModel\IComponent $input}
+
+        {if $input instanceof Nette\Forms\Controls\SubmitButton}
+            {input PetStore\Presenters\Home\HomePresenter::FORM_SUBMIT_CREATE, class => ['btn', 'btn-primary']}
+        {/if}
+    </div>
+</form>

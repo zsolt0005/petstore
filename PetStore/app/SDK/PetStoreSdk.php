@@ -11,7 +11,6 @@ use JsonMapper;
 use JsonMapper_Exception;
 use Nette\Http\FileUpload;
 use Nette\Utils\Json;
-use PetStore\Data\FileUploadResponse;
 use PetStore\Data\Pet;
 use PetStore\SDK\Exceptions\RequestException as SDKRequestException;
 use Psr\Http\Message\ResponseInterface;
@@ -143,6 +142,22 @@ final class PetStoreSdk
     {
         return $this->makeRequestAndParseObjectResponse(Pet::class, self::POST, '/pet', [
             RequestOptions::JSON => $pet
+        ]);
+    }
+
+    /**
+     * Updates a pet.
+     *
+     * @param Pet $updatePetData
+     *
+     * @return Pet
+     * @throws SDKRequestException When the request fails
+     * @throws InvalidArgumentException When the parsing fails
+     */
+    public function update(Pet $updatePetData): Pet
+    {
+        return $this->makeRequestAndParseObjectResponse(Pet::class, self::PUT, '/pet', [
+            RequestOptions::JSON => $updatePetData
         ]);
     }
 

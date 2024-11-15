@@ -5,14 +5,11 @@ namespace PetStore\Services;
 use InvalidArgumentException;
 use Nette\Application\LinkGenerator;
 use Nette\Application\UI\InvalidLinkException;
-use Nette\Http\FileUpload;
 use Nette\Http\IResponse;
-use Nette\Utils\ArrayHash;
-use Nette\Utils\Arrays;
 use PetStore\Data\HomeFilterData;
 use PetStore\Data\Pet;
+use PetStore\Data\PetFormData;
 use PetStore\Data\Result;
-use PetStore\Data\Tag;
 use PetStore\Enums\HomeActionCreateErrorResult;
 use PetStore\Enums\HomeActionDefaultErrorResult;
 use PetStore\Enums\HomeActionDeleteErrorResult;
@@ -20,10 +17,8 @@ use PetStore\Enums\HomeActionUpdateErrorResult;
 use PetStore\Presenters\Components\Grid\Builders\GridDataBuilder;
 use PetStore\Presenters\Components\Grid\Data\GridColumnActionData;
 use PetStore\Presenters\Components\Grid\Data\GridData;
-use PetStore\Presenters\Home\HomePresenter;
 use PetStore\SDK\Exceptions\RequestException;
 use PetStore\SDK\PetStoreSdk;
-use PetStore\Utils\TypeUtils;
 
 /**
  * Class HomeService
@@ -83,8 +78,6 @@ final readonly class HomeService
 
             foreach($pets as $pet)
             {
-                $tags = Arrays::map($pet->tags, static fn(Tag $tag) => $tag->name);
-
                 $actions = [
                     GridColumnActionData::create('edit', 'Edit', $this->linkGenerator->link('Home:edit', ['id' => $pet->id]), 'btn-info'),
                     GridColumnActionData::create('delete', 'Delete', $this->linkGenerator->link('Home:delete', ['id' => $pet->id]), 'btn-danger')
@@ -95,7 +88,7 @@ final readonly class HomeService
                     ->addColumn($pet->name)
                     ->addColumn($pet->category->name)
                     ->addColumn($pet->status)
-                    ->addColumn(implode(', ', $tags))
+                    ->addColumn($pet->getTagNames(', '))
                     ->addActionsColumn($actions);
             }
         }
@@ -143,27 +136,19 @@ final readonly class HomeService
     /**
      * Creates a new pet.
      *
-     * @param ArrayHash<string> $values
+     * @param PetFormData $data
      *
      * @return Result<HomeActionCreateErrorResult, Pet>
      */
-    public function createPet(ArrayHash $values): Result
+    public function createPet(PetFormData $data): Result
     {
-        $name = TypeUtils::convertToString($values[HomePresenter::FORM_INPUT_CREATE_NAME]) ?? '';
-        $categoryName = TypeUtils::convertToString($values[HomePresenter::FORM_INPUT_CREATE_CATEGORY]) ?? '';
-        $tagNames = TypeUtils::convertToString($values[HomePresenter::FORM_INPUT_CREATE_TAGS]) ?? '';
-        $status = TypeUtils::convertToString($values[HomePresenter::FORM_INPUT_CREATE_STATUS]) ?? '';
-
-        /** @var FileUpload[] $images */
-        $images = $values[HomePresenter::FORM_INPUT_CREATE_IMAGES];
-
-        $category = $this->categoryService->findByName($categoryName);
+        $category = $this->categoryService->findByName($data->category);
         if($category === null)
         {
             return Result::of(failure: HomeActionCreateErrorResult::CATEGORY_NOT_FOUND);
         }
 
-        $tagNames = explode(',', str_replace(' ', '', $tagNames));
+        $tagNames = explode(',', str_replace(' ', '', $data->tags));
         $tags = [];
         foreach($tagNames as $tagName)
         {
@@ -177,10 +162,10 @@ final readonly class HomeService
         }
 
         $pet = new Pet();
-        $pet->name = $name;
+        $pet->name = $data->name;
         $pet->category = $category;
         $pet->tags = $tags;
-        $pet->status = $status;
+        $pet->status = $data->status;
 
         $sdk = PetStoreSdk::createInstance();
 
@@ -201,14 +186,14 @@ final readonly class HomeService
             return Result::of(failure: HomeActionCreateErrorResult::INTERNAL_SERVER_ERROR);
         }
 
-        if(count($images) === 0)
+        if(count($data->images) === 0)
         {
             return Result::of(success: $createdPet);
         }
 
         try
         {
-            $sdk->uploadImages($createdPet, $images);
+            $sdk->uploadImages($createdPet, $data->images);
         }
         catch (RequestException $e)
         {
@@ -220,6 +205,84 @@ final readonly class HomeService
         }
 
         return Result::of(success: $createdPet);
+    }
+
+    /**
+     * Updates a pet.
+     *
+     * @param Pet $pet
+     * @param PetFormData $data
+     *
+     * @return Result<HomeActionCreateErrorResult, Pet>
+     */
+    public function updatePet(Pet $pet, PetFormData $data): Result
+    {
+        $category = $this->categoryService->findByName($data->category);
+        if($category === null)
+        {
+            return Result::of(failure: HomeActionCreateErrorResult::CATEGORY_NOT_FOUND);
+        }
+
+        $tagNames = explode(',', str_replace(' ', '', $data->tags));
+        $tags = [];
+        foreach($tagNames as $tagName)
+        {
+            $tag = $this->tagService->findByName($tagName);
+            if($tag === null)
+            {
+                return Result::of(failure: HomeActionCreateErrorResult::TAG_NOT_FOUND);
+            }
+
+            $tags[] = $tag;
+        }
+
+        $updatePetData = new Pet();
+        $updatePetData->id = $pet->id;
+        $updatePetData->name = $data->name;
+        $updatePetData->category = $category;
+        $updatePetData->tags = $tags;
+        $updatePetData->status = $data->status;
+        $updatePetData->photoUrls = $pet->photoUrls;
+
+        $sdk = PetStoreSdk::createInstance();
+
+        try
+        {
+            $updatedPet = $sdk->update($updatePetData);
+        }
+        catch (RequestException $e)
+        {
+            return match ($e->getCode())
+            {
+                IResponse::S400_BadRequest , IResponse::S404_NotFound, IResponse::S405_MethodNotAllowed
+                    => Result::of(failure: HomeActionCreateErrorResult::INVALID_INPUT),
+                default => Result::of(failure: HomeActionDefaultErrorResult::INTERNAL_SERVER_ERROR)
+            };
+        }
+        catch (InvalidArgumentException)
+        {
+            return Result::of(failure: HomeActionCreateErrorResult::INTERNAL_SERVER_ERROR);
+        }
+
+        if(count($data->images) === 0)
+        {
+            return Result::of(success: $updatedPet);
+        }
+
+        try
+        {
+            $sdk->uploadImages($updatedPet, $data->images);
+        }
+        catch (RequestException $e)
+        {
+            return match ($e->getCode())
+            {
+                IResponse::S400_BadRequest => Result::of(failure: HomeActionCreateErrorResult::INVALID_IMAGE_FILE),
+                default => Result::of(failure: HomeActionDefaultErrorResult::INTERNAL_SERVER_ERROR)
+            };
+        }
+
+        return Result::of(success: $updatedPet);
     }
 
     /**

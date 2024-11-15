@@ -39,8 +39,4 @@ TODO
 
 
 # TODO
-- Views
-  - Overview
-      - Actions
-        - Update
-          - Formular so všetkými data
+- Translator

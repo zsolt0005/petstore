@@ -5,9 +5,9 @@ namespace PetStore\Presenters\Home;
 use InvalidArgumentException;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
-use Nette\Utils\ArrayHash;
 use PetStore\Data\HomeFilterData;
 use PetStore\Data\Pet;
+use PetStore\Data\PetFormData;
 use PetStore\Enums\HomeActionCreateErrorResult;
 use PetStore\Enums\HomeActionDefaultErrorResult;
 use PetStore\Enums\HomeActionDeleteErrorResult;
@@ -34,6 +34,9 @@ final class HomePresenter extends APresenter
         FORM_INPUT_CREATE_STATUS = 'status',
         FORM_INPUT_CREATE_IMAGES = 'images',
         FORM_SUBMIT_CREATE = 'create';
+
+    /** @var Pet|null Pet. */
+    private ?Pet $pet = null;
 
     /**
      * Constructor.
@@ -63,20 +66,13 @@ final class HomePresenter extends APresenter
             success: function (?GridData $gridData) use ($template) { $template->gridData = $gridData; },
             failure: function (?HomeActionDefaultErrorResult $error)
             {
-                switch ($error)
+                match ($error)
                 {
-                    case HomeActionDefaultErrorResult::NOT_FOUND:
-                        $this->flashMessageWarning('No pets found for the given filter');
-                        break;
-
-                    case HomeActionDefaultErrorResult::INVALID_FILTER_VALUE:
-                        $this->flashMessageWarning('Invalid filter value');
-                        break;
-
-                    case HomeActionDefaultErrorResult::INTERNAL_SERVER_ERROR:
-                        $this->flashMessageError('Something went wrong');
-                        break;
-                }
+                    HomeActionDefaultErrorResult::NOT_FOUND => $this->flashMessageWarning('No pets found'),
+                    HomeActionDefaultErrorResult::INVALID_FILTER_VALUE => $this->flashMessageWarning('Invalid filter value'),
+                    HomeActionDefaultErrorResult::INTERNAL_SERVER_ERROR => $this->flashMessageError('Something went wrong'),
+                    null => null
+                };
             }
         );
     }
@@ -109,6 +105,7 @@ final class HomePresenter extends APresenter
      *
      * @return void
      * @throws AbortException
+     * @throws InvalidArgumentException
      */
     public function actionEdit(int $id): void
     {
@@ -129,6 +126,7 @@ final class HomePresenter extends APresenter
 
         $template = $this->getTemplate();
         $template->pet = $pet;
+        $this->pet = $pet;
     }
 
     /**
@@ -146,50 +144,65 @@ final class HomePresenter extends APresenter
      *
      * @return Form
      */
-    public function createComponentCreateForm(): Form
+    public function createComponentForm(): Form
     {
         $form = new Form();
 
-        $form->addText(self::FORM_INPUT_CREATE_NAME, 'Name');
-        $form->addText(self::FORM_INPUT_CREATE_CATEGORY, 'Category');
-        $form->addText(self::FORM_INPUT_CREATE_TAGS, 'Tags');
-        $form->addText(self::FORM_INPUT_CREATE_STATUS, 'Status');
-        $form->addMultiUpload(self::FORM_INPUT_CREATE_IMAGES, 'Images')
-            ->setHtmlAttribute('accept', 'image/*');
-        $form->addSubmit(self::FORM_SUBMIT_CREATE, 'Create');
+        $imagesLabel = $this->pet === null ? 'Images' : 'Add images';
+        $submitButtonCaption = $this->pet === null ? 'Create' : 'Edit';
 
-        $form->onSuccess[] = [$this, 'processCreateForm'];
-        $form->onValidate[] = [$this, 'validateCreateForm'];
+        $form->addText(self::FORM_INPUT_CREATE_NAME, 'Name')
+            ->setDefaultValue($this->pet?->name);
+        $form->addText(self::FORM_INPUT_CREATE_CATEGORY, 'Category')
+            ->setDefaultValue($this->pet?->category?->name);
+        $form->addText(self::FORM_INPUT_CREATE_TAGS, 'Tags')
+            ->setDefaultValue($this->pet?->getTagNames(', '));
+        $form->addText(self::FORM_INPUT_CREATE_STATUS, 'Status')
+            ->setDefaultValue($this->pet?->status);
+        $form->addMultiUpload(self::FORM_INPUT_CREATE_IMAGES, $imagesLabel)
+            ->setHtmlAttribute('accept', 'image/*');
+        $form->addSubmit(self::FORM_SUBMIT_CREATE, $submitButtonCaption);
+
+        $form->onValidate[] = [$this, 'validateForm'];
+
+        if($this->pet === null)
+        {
+            $form->onSuccess[] = [$this, 'processCreateForm'];
+        }
+        else
+        {
+            $form->onSuccess[] = [$this, 'processUpdateForm'];
+        }
 
         return $form;
     }
 
     /**
-     * Validates the create form.
+     * Validates the form.
      *
      * @param Form $form
-     * @param ArrayHash<string> $values
+     * @param PetFormData $data
      *
      * @return void
      */
-    public function validateCreateForm(Form $form, ArrayHash $values): void
+    public function validateForm(Form $form, PetFormData $data): void
     {
-        if(empty($values[self::FORM_INPUT_CREATE_NAME]))
+        if(empty($data->name))
         {
             $form[self::FORM_INPUT_CREATE_NAME]->addError('Pet name cannot be empty');
         }
 
-        if(empty($values[self::FORM_INPUT_CREATE_CATEGORY]))
+        if(empty($data->category))
         {
             $form[self::FORM_INPUT_CREATE_CATEGORY]->addError('Category cannot be empty');
         }
 
-        if(empty($values[self::FORM_INPUT_CREATE_TAGS]))
+        if(empty($data->tags))
         {
             $form[self::FORM_INPUT_CREATE_TAGS]->addError('Tags cannot be empty');
         }
 
-        if(empty($values[self::FORM_INPUT_CREATE_STATUS]))
+        if(empty($data->status))
         {
             $form[self::FORM_INPUT_CREATE_STATUS]->addError('Status cannot be empty');
         }
@@ -199,13 +212,15 @@ final class HomePresenter extends APresenter
      * Processes the create form.
      *
      * @param Form $form
-     * @param ArrayHash<string> $values
+     * @param PetFormData $data
      *
      * @return never
+     * @throws AbortException
+     * @throws InvalidArgumentException
      */
-    public function processCreateForm(Form $form, ArrayHash $values): never
+    public function processCreateForm(Form $form, PetFormData $data): never
     {
-        $result = $this->service->createPet($values);
+        $result = $this->service->createPet($data);
         $result->match(
             success: fn (Pet $pet) => $this->flashMessageInfo('Pet was created'),
             failure: function (HomeActionCreateErrorResult $errorResult) use ($form): void
@@ -232,6 +247,54 @@ final class HomePresenter extends APresenter
         );
 
         $this->redirect('Home:default');
+    }
+
+    /**
+     * Processes the update form.
+     *
+     * @param Form $form
+     * @param PetFormData $data
+     *
+     * @return never
+     * @throws AbortException
+     * @throws InvalidArgumentException
+     */
+    public function processUpdateForm(Form $form, PetFormData $data): never
+    {
+        // This should never happen
+        if($this->pet === null)
+        {
+            $this->flashMessageError('Something went wrong');
+            $this->redirect('Home:default');
+        }
+
+        $result = $this->service->updatePet($this->pet, $data);
+        $result->match(
+            success: fn (Pet $pet) => $this->flashMessageInfo('Pet was updated'),
+            failure: function (HomeActionCreateErrorResult $errorResult) use ($form): void
+            {
+                match ($errorResult)
+                {
+                    HomeActionCreateErrorResult::CATEGORY_NOT_FOUND => $this->flashMessageWarning('Category not found'),
+                    HomeActionCreateErrorResult::TAG_NOT_FOUND => $this->flashMessageWarning('Tag not found'),
+                    HomeActionCreateErrorResult::INVALID_INPUT => $this->flashMessageWarning('Invalid values supplied'),
+                    HomeActionCreateErrorResult::INTERNAL_SERVER_ERROR => $this->flashMessageError('Something went wrong'),
+                    default => null
+                };
+
+                // Special case where pet was created by the iamges were failed to upload
+                if($errorResult == HomeActionCreateErrorResult::INVALID_IMAGE_FILE)
+                {
+                    $this->flashMessageInfo('Pet was updated');
+                    $this->flashMessageWarning('Failed to upload pet images due to an invalid image file');
+                    return;
+                }
+
+                $form->addError('Failed to update pet');
+            }
+        );
+
+        $this->redirect('Home:edit', ['id' => $this->pet->id]);
     }
 
     /**

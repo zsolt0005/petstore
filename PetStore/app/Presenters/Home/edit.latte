@@ -5,3 +5,13 @@
 <a n:href="Home:default" class="btn btn-outline-light mb-3">Back</a>
 
 <h2>Editing: <b class="fw-bold text-danger">{$pet->name}</b></h2>
+
+{embed pet-form.latte, form: form}
+    {block beforeSubmitContent}
+        <div class="row">
+            {foreach $pet->photoUrls as $photoUrl}
+                <img src="{$basePath}/{$photoUrl}" alt="{$photoUrl}" class="col-auto img-thumbnail me-2" style="max-height: 200px">
+            {/foreach}
+        </div>
+    {/block}
+{/embed}

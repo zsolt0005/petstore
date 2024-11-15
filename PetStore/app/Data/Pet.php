@@ -2,6 +2,7 @@
 
 namespace PetStore\Data;
 
+use Nette\Utils\Arrays;
 use Symfony\Component\Serializer\Annotation\SerializedPath;
 
 /**
@@ -49,5 +50,17 @@ final class Pet
         }
 
         $this->photoUrls = $photoUrls;
+    }
+
+    /**
+     * Tag names separated by separator.
+     *
+     * @param string $separator
+     *
+     * @return string
+     */
+    public function getTagNames(string $separator = ', '): string
+    {
+        return implode($separator, Arrays::map($this->tags, static fn(Tag $tag) => $tag->name));
     }
 }
