@@ -31,11 +31,6 @@
 			"PetStore\\": "app"
 		}
 	},
-	"autoload-dev": {
-		"psr-4": {
-			"PetStore\\Tests\\": "tests"
-		}
-	},
 	"minimum-stability": "dev",
 	"scripts":
 	{
